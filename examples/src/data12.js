@@ -885,6 +885,889 @@ export default {
         __typename: 'PfmOverview'
       },
 
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2018-10-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 173635.75211070632,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 80050.4716897614,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 29884.411585267946,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 5398.128335205872,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 20140.167462532154,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 6768.254921780019,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 8115.447634712703,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 11257.856270507004,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 7853.070901482323,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 7153.732539001619,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 9496.322071216557,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 97643.08726134081,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      },
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2018-11-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 102782.7815338112,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 93331.31625656273,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 20081.40095972964,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 7698.353776948217,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 82261.96801328643,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 9656.136901980753,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 8896.426318973725,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 11798.04571759555,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 10273.382690039583,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 12543.065206026225,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 92951.63130345108,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 133871.79742851687,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      },
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2018-12-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 102525.97401720486,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 8775.818231740073,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 29184.664507895384,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 38888.52737914972,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 95224.0523941964,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 27653.188552790925,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 6901.058140773391,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 1764.913842340583,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 1698.5244919041609,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 12163.843616598999,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 88489.2501285989,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 79411.72136895962,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      },
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2019-01-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 74490.66576456321,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 37651.890110237175,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 43627.74084535166,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 38799.64068300765,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 17873.131377717335,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 38.213230615999905,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 4547.758562978672,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 12219.58379662268,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 1943.974399377093,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 9450.903841578649,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 14018.144933965159,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 116715.34368035194,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      },
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2019-02-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 22479.96661148086,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 39587.263020680744,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 34669.621662472564,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 9709.101006941046,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 90333.30951374637,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 24898.63752312975,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 5860.348969530495,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 16860.268368884113,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 5774.804786833785,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 536.9257701639012,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 53440.762517227624,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 248316.43206470623,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      },
+      {
+        cif: '4002LJ',
+        currency: 'idr',
+        timeGroup: 'monthly',
+        lastTransactionDate: '2019-03-12T09:48:25.056Z',
+        pfmTypes: [
+          {
+            name: 'Income',
+            color: '#8fbc5a',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 6759.065122970132,
+            previousGroupDifferencePercentage: 20,
+            pfmCategories: [
+              {
+                name: 'Salary',
+                color: '#123456',
+                transactionCategories: ['201', '205', '212', '213'],
+                isSummaryOnly: false,
+                total: 88779.98791092272,
+                totalPercentage: 50
+              },
+              {
+                name: 'Incoming',
+                color: '#123456',
+                transactionCategories: ['202', '204', '210', '211', '214'],
+                isSummaryOnly: false,
+                total: 1126.9830120456127,
+                totalPercentage: 30
+              },
+              {
+                name: 'Interest',
+                color: '#123456',
+                transactionCategories: ['206', '207'],
+                isSummaryOnly: false,
+                total: 39472.34549775997,
+                totalPercentage: 20
+              }
+            ]
+          },
+          {
+            name: 'Spending',
+            color: '#fc9d13',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 61470.8099560072,
+            previousGroupDifferencePercentage: 10,
+            pfmCategories: [
+              {
+                name: 'Installment',
+                color: '#123456',
+                transactionCategories: ['103', '105', '109', '112', '142'],
+                isSummaryOnly: false,
+                total: 25258.103842529512,
+                totalPercentage: 30
+              },
+              {
+                name: 'Routine',
+                color: '#123456',
+                transactionCategories: [
+                  '101',
+                  '102',
+                  '106',
+                  '107',
+                  '108',
+                  '110',
+                  '114',
+                  '115',
+                  '118',
+                  '123',
+                  '125',
+                  '129',
+                  '130',
+                  '131',
+                  '132',
+                  '138',
+                  '140',
+                  '141',
+                  '143',
+                  '144',
+                  '215'
+                ],
+                isSummaryOnly: false,
+                total: 6145.21310092532,
+                totalPercentage: 10
+              },
+              {
+                name: 'Charity',
+                color: '#123456',
+                transactionCategories: ['133', '135'],
+                isSummaryOnly: false,
+                total: 9887.380957803767,
+                totalPercentage: 20
+              },
+              {
+                name: 'Lifestyle',
+                color: '#123456',
+                transactionCategories: [
+                  '104',
+                  '117',
+                  '119',
+                  '120',
+                  '121',
+                  '122',
+                  '124',
+                  '126',
+                  '127',
+                  '128',
+                  '134',
+                  '137',
+                  '203'
+                ],
+                isSummaryOnly: false,
+                total: 2461.748268015876,
+                totalPercentage: 13
+              },
+              {
+                name: 'Uncategorized',
+                color: '#123456',
+                transactionCategories: ['116', '998'],
+                isSummaryOnly: true,
+                total: 12473.589595865416,
+                totalPercentage: 17
+              }
+            ]
+          },
+          {
+            name: 'Net',
+            color: '#7d7d7d',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 97227.74717521401,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          },
+          {
+            name: 'Balance',
+            color: '#00a4de',
+            colorIncrease: '#123456',
+            colorDecrease: '#123456',
+            total: 23627.948844471568,
+            previousGroupDifferencePercentage: 0,
+            pfmCategories: []
+          }
+        ],
+        __typename: 'PfmOverview'
+      }
+
     ]
   }
 };

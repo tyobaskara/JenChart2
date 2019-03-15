@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { render } from 'react-dom';
 import JenChart from '../../src';
+import pfmData3 from './data3';
 import pfmData from './data';
+import pfmData12 from './data12';
 
 import './styles.css';
 import triangle from '../../src/triangle.png';
@@ -49,40 +51,135 @@ export default class App extends PureComponent {
               }}
               activeIndex={1}
               axisLabelSize={this._detectmob() ? 11 : 11}
-              axisLabelLeftPos={10}
+              axisLabelPosX={45}
               axisCustom={{
                 strokeDasharray: [0, 0],
                 strokeWidth: 2
               }}
+              axisPaddingLeft={50}
               barPadding={2}
-              barLeftPos={15}
+              barLeftPos={20}
               borderBottom
               borderBottomProp={{
                 stroke: '#dfdfdf',
                 strokeWidth: 2
               }}
-              data={pfmData.data.pfmOverviews}
-              reverseData
+              data={pfmData3.data.pfmOverviews}
               labelTopStyle={{
-                fontSize: '14'
+                fontSize: '13',
+                fontWeight: '500'
               }}
               labelBottomStyle={{
-                fontSize: '14'
+                fontSize: '13',
+                fontWeight: '600'
               }}
               labelTopPosition={20}
-              labelBottomPosition={35}
+              labelBottomPosition={40}
+              singleYearPos={6}
               graphMarginVertical={60}
               onPress={(index, item) => this._onPress(index, item)}
               platform='web'
               separatorStyle={{
                 stroke: '#dfdfdf',
                 strokeDasharray: [3, 3],
-                strokeWidth: '3',
+                strokeWidth: '1',
               }}
-              trianglePositionY={6}
-              trianglePositionX={-2}
-              triangleSrc={triangle}
-              triangleScale={15}
+            />
+          )}
+        </div>
+
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              labelBottomPosition={40}
+              singleYearPos={6}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+            />
+          )}
+        </div>
+
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData12.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              labelBottomPosition={40}
+              singleYearPos={6}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
             />
           )}
         </div>
@@ -95,7 +192,9 @@ export default class App extends PureComponent {
               activeIndex={0}
               axisColor='lightblue'
               axisLabelColor='brown'
+              axisLabelPosX={60}
               axisLabelSize={15}
+              axisPaddingLeft={70}
               barColor={{ barLeft: 'green', barRight: 'blue' }}
               circleStyle={{
                 r: '5',
@@ -107,11 +206,18 @@ export default class App extends PureComponent {
                 strokeWidth: 2
               }}
               data={pfmData.data.pfmOverviews}
-              reverseData
               labelTopStyle={{
                 fill: 'red',
                 fontSize: '13',
                 fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              rectActiveBgPosX={-10}
+              rectActiveBgPosY={6}
+              rectActiveBgRad={5}
+              rectActiveSize={{
+                width: 40,
+                height: 20
               }}
               labelBottomStyle={{
                 fill: 'orange',
@@ -138,6 +244,7 @@ export default class App extends PureComponent {
             />
           )}
         </div>
+        
       </div>
     );
   }

@@ -11,21 +11,45 @@ export default class JenChart extends PureComponent {
 
     this.state = {
       data: this.props.data,
-      activeIndex: this.props.activeIndex
+      activeIndex: this.props.activeIndex,
+      separatorYear: []
     };
   }
 
+  _checkYear = () => {
+    this.state.data.map((item) => {
+      const getYear = _getYear(item.lastTransactionDate);
+      const { separatorYear } = this.state;
+
+      if (separatorYear.indexOf(getYear) === -1) {
+        const year = separatorYear;
+        year.push(getYear);
+        this.setState({
+          separatorYear: year
+        }, () => {
+          console.log('getYear');
+          console.log(separatorYear);
+        })
+      }
+    });
+  }
+
   _axisLabel = (y, value, isInitial) => {
-    const { axisLabelColor, axisLabelSize, axisLabelLeftPos } = this.props;
+    const { 
+      axisLabelColor, 
+      axisLabelSize, 
+      axisLabelPosX, 
+      axisLabelPosY 
+    } = this.props;
 
     return (
       <Text
-        x={axisLabelLeftPos}
-        textAnchor='start'
-        y={y(value) * -1 - 5}
+        x={axisLabelPosX}
+        y={y(value) * -1 + axisLabelPosY}
         fontSize={axisLabelSize}
         fill={axisLabelColor}
         fillOpacity={0.4}
+        textAnchor={this.props.axisLabelAlign}
       >
         {isInitial ? 0 : _formatAxisLabel(value)}
       </Text>
@@ -35,7 +59,7 @@ export default class JenChart extends PureComponent {
   _drawAxis = (axisCustomProp, value, graphWidth, y, isInitial) => (
     <G>
       <Line
-        x1='0'
+        x1={this.props.axisPaddingLeft}
         y1={y(value) * -1}
         x2={graphWidth}
         y2={y(value) * -1}
@@ -60,10 +84,15 @@ export default class JenChart extends PureComponent {
     const {
       activeColor,
       barLeftPos,
+      circleActiveBgPos,
+      circleActiveBgRad,
+      rectActiveBgPosX,
+      rectActiveBgPosY,
+      rectActiveBgRad,
+      rectActiveSize,
+      bgActiveColor,
       fixTriangle,
       labelTopStyle,
-      labelBottomStyle,
-      labelBottomPosition,
       labelTopPosition,
       months,
       trianglePositionX,
@@ -76,7 +105,8 @@ export default class JenChart extends PureComponent {
 
     const labelActiveStyles = this._activeIndex(index)
       ? {
-          fill: activeColor
+          fill: activeColor,
+          fontWeight: 600
         }
       : null;
     const labelTopStyles = {
@@ -84,13 +114,6 @@ export default class JenChart extends PureComponent {
       fontSize: '10',
       fontWeight: '600',
       ...labelTopStyle,
-      ...labelActiveStyles
-    };
-    const labelBottomStyles = {
-      fill: '#7d7d7d',
-      fontSize: '10',
-      fontWeight: '400',
-      ...labelBottomStyle,
       ...labelActiveStyles
     };
     const triangleSize = triangleScale;
@@ -107,6 +130,28 @@ export default class JenChart extends PureComponent {
 
     return (
       <G key={'label' + item.lastTransactionDate}>
+        {/* Active circle background */}
+        {this._activeIndex(index) && isAboveSix && (
+          <Circle
+              cx={x(item.lastTransactionDate) + barLeftPos}
+              cy={labelTopPosition - circleActiveBgPos}
+              r={circleActiveBgRad}
+              fill={bgActiveColor}
+          />
+        )}
+        {/* Active rectangle background */}
+        {this._activeIndex(index) && !isAboveSix && (
+          <Rect
+            x={x(item.lastTransactionDate) + rectActiveBgPosX}
+            y={rectActiveBgPosY}
+            rx={rectActiveBgRad}
+            ry={rectActiveBgRad}
+            {...rectActiveSize}
+            fill={bgActiveColor}
+          />
+        )}
+
+        {/* Months */}
         <Text
           {...labelTopStyles}
           x={x(item.lastTransactionDate) + barLeftPos}
@@ -116,17 +161,7 @@ export default class JenChart extends PureComponent {
           {isAboveSix ? month : months[month - 1]}
         </Text>
 
-        {!isAboveSix && (
-          <Text
-            {...labelBottomStyles}
-            x={x(item.lastTransactionDate) + barLeftPos}
-            y={labelBottomPosition}
-            textAnchor='middle'
-          >
-            {_getYear(item.lastTransactionDate)}
-          </Text>
-        )}
-
+        {/* Image triangle active arrow */}
         {this._activeIndex(index) && triangleSrc && (
           <Image
             href={triangleSrc}
@@ -142,8 +177,8 @@ export default class JenChart extends PureComponent {
     );
   };
 
-  _drawBars = (item, graphBarWidth, x, y) => {
-    const { barLeftPos } = this.props;
+  _drawBars = (item, x, y, topValue) => {
+    const { barLeftPos, graphBarWidth } = this.props;
     const barColors = {
       barLeft: '#8fbc5a',
       barRight: '#fc9d13',
@@ -151,6 +186,11 @@ export default class JenChart extends PureComponent {
     };
     const Income = _selectObject(item.pfmTypes, 'name', 'Income');
     const Spending = _selectObject(item.pfmTypes, 'name', 'Spending');
+    const isLineCap = (value) => {
+      const val = (value / topValue) * 100;
+
+      return val > 5 ? true : false;
+    }
 
     return (
       <G>
@@ -158,11 +198,21 @@ export default class JenChart extends PureComponent {
           x1={x(item.lastTransactionDate) + barLeftPos}
           y1={y(0) * -1}
           x2={x(item.lastTransactionDate) + barLeftPos}
-          y2={y(Income.total) * -1}
-          stroke={barColors.barLeft}
+          y2={y(topValue) * -1}
+          stroke='#f5f5f5'
           strokeWidth={graphBarWidth}
-          strokeLinecap="round"
+          strokeLinecap='round'
         />
+        <Line
+          x1={x(item.lastTransactionDate) + barLeftPos}
+          y1={y(0) * -1}
+          x2={x(item.lastTransactionDate) + barLeftPos}
+          y2={y(-topValue) * -1}
+          stroke='#f5f5f5'
+          strokeWidth={graphBarWidth}
+          strokeLinecap='round'
+        />
+
         <Line
           x1={x(item.lastTransactionDate) + barLeftPos}
           y1={y(0) * -1}
@@ -170,8 +220,38 @@ export default class JenChart extends PureComponent {
           y2={y(-Spending.total) * -1}
           stroke={barColors.barRight}
           strokeWidth={graphBarWidth}
-          strokeLinecap="round"
         />
+        {isLineCap(Spending.total) && (
+          <Line
+            x1={x(item.lastTransactionDate) + barLeftPos}
+            y1={y(-Spending.total) * -1}
+            x2={x(item.lastTransactionDate) + barLeftPos}
+            y2={y(-Spending.total) * -1}
+            stroke={barColors.barRight}
+            strokeWidth={graphBarWidth}
+            strokeLinecap='round'
+          />
+        )}
+
+        <Line
+          x1={x(item.lastTransactionDate) + barLeftPos}
+          y1={y(0) * -1}
+          x2={x(item.lastTransactionDate) + barLeftPos}
+          y2={y(Income.total) * -1}
+          stroke={barColors.barLeft}
+          strokeWidth={graphBarWidth}
+        />
+        {isLineCap(Income.total) && (
+          <Line
+            x1={x(item.lastTransactionDate) + barLeftPos}
+            y1={y(Income.total) * -1}
+            x2={x(item.lastTransactionDate) + barLeftPos}
+            y2={y(Income.total) * -1}
+            stroke={barColors.barLeft}
+            strokeWidth={graphBarWidth}
+            strokeLinecap='round'
+          />
+        )}
       </G>
     );
   };
@@ -195,51 +275,98 @@ export default class JenChart extends PureComponent {
   };
 
   _drawLine = (x, y, index, array) => {
-    const { lineStyle, barLeftPos } = this.props;
-    const lineStyles = {
-      stroke: '#00a4de',
-      strokeWidth: 3,
-      ...lineStyle
-    };
-    const y1 = _selectObject(array[index].pfmTypes, 'name', 'Net');
-    const y2 = _selectObject(array[index + 1].pfmTypes, 'name', 'Net');
-
-    return (
-      <Line
-        x1={x(array[index].lastTransactionDate) + barLeftPos}
-        y1={y(y1.total) * -1}
-        x2={x(array[index + 1].lastTransactionDate) + barLeftPos}
-        y2={y(y2.total) * -1}
-        {...lineStyles}
-      />
-    );
+    if (index < array.length - 1) {
+      const { lineStyle, barLeftPos } = this.props;
+      const lineStyles = {
+        stroke: '#00a4de',
+        strokeWidth: 3,
+        ...lineStyle
+      };
+      const y1 = _selectObject(array[index].pfmTypes, 'name', 'Net');
+      const y2 = _selectObject(array[index + 1].pfmTypes, 'name', 'Net');
+  
+      return (
+        <Line
+          x1={x(array[index].lastTransactionDate) + barLeftPos}
+          y1={y(y1.total) * -1}
+          x2={x(array[index + 1].lastTransactionDate) + barLeftPos}
+          y2={y(y2.total) * -1}
+          {...lineStyles}
+        />
+      );
+    }
   };
 
   _drawSeparator = (x, y, index, array, topValue) => {
-    const getYear = _getYear(array[index].lastTransactionDate);
-    const nextGetYear = _getYear(array[index + 1].lastTransactionDate);
+    const { 
+      barLeftPos, 
+      labelBottomPosition, 
+      labelBottomStyle, 
+      singleYearPos ,
+      graphMarginVertical
+    } = this.props;
+    const { separatorYear } = this.state;
+    const nextIndex = index + 1;
+    
+    const pos = x(array[index].lastTransactionDate);
 
-    if (getYear !== nextGetYear) {
-      const { barLeftPos } = this.props;
-      const pos = x(array[index].lastTransactionDate);
-      const posNext = x(array[index+1].lastTransactionDate);
-      const midPos = (pos + posNext) / 2;
+    const labelBottomStyles = {
+      fill: '#7d7d7d',
+      fontSize: '10',
+      fontWeight: '400',
+      ...labelBottomStyle
+    };
 
-      const style = {
-        stroke: '#dfdfdf',
-        strokeDasharray: [3, 3],
-        strokeWidth: '3',
-        ...this.props.separatorStyle
+    const style = {
+      stroke: '#dfdfdf',
+      strokeDasharray: [3, 3],
+      strokeWidth: '3',
+      ...this.props.separatorStyle
+    };
+
+    if (index < array.length - 1) {
+
+      const getYear = _getYear(array[index].lastTransactionDate);
+      const nextGetYear = _getYear(array[nextIndex].lastTransactionDate);
+  
+      if (separatorYear.length > 1 && getYear !== nextGetYear) {
+        const posNext = x(array[nextIndex].lastTransactionDate);
+        const midPos = (pos + posNext) / 2;
+  
+        return (
+          <G>
+            <Line
+              x1={midPos + barLeftPos}
+              y1={y(topValue) * -1}
+              x2={midPos + barLeftPos}
+              y2={y(-topValue) * -1 + graphMarginVertical}
+              {...style}
+            />
+            <Text
+              {...labelBottomStyles}
+              x={pos + barLeftPos - singleYearPos}
+              y={labelBottomPosition}
+              textAnchor='middle'
+            >
+              {_getYear(array[index].lastTransactionDate)}
+            </Text>
+          </G>
+        )
       }
+    }
 
+    if (separatorYear.length === 1 && nextIndex === array.length) {
       return (
-        <Line
-          x1={midPos + barLeftPos}
-          y1={y(topValue) * -1}
-          x2={midPos + barLeftPos}
-          y2={y(-topValue) * -1}
-          {...style}
-        />
+        <G>
+          <Text
+            {...labelBottomStyles}
+            x={pos + barLeftPos - singleYearPos}
+            y={labelBottomPosition}
+            textAnchor='middle'
+          >
+            {_getYear(array[index].lastTransactionDate)}
+          </Text>
+        </G>
       )
     }
   }
@@ -265,12 +392,16 @@ export default class JenChart extends PureComponent {
     index,
     item,
     x,
-    graphBarWidth,
     graphHeight,
-    graphMarginVertical,
-    platform
   ) => {
+    const { 
+      barLeftPos,
+      graphBarWidth,
+      graphMarginVertical,
+      platform 
+    } = this.props;
     const propsOnpress = {};
+    const halfgraphBarWidth = graphBarWidth / 2;
 
     if (platform !== 'web') {
       propsOnpress.onPressIn = () => this._rectOnPress(index, item);
@@ -278,7 +409,7 @@ export default class JenChart extends PureComponent {
 
     return (
       <Rect
-        x={x(item.lastTransactionDate) - graphBarWidth / 2}
+        x={x(item.lastTransactionDate) + barLeftPos - halfgraphBarWidth - 5}
         y={graphHeight * -1}
         width={graphBarWidth * 2}
         height={graphHeight + graphMarginVertical}
@@ -297,7 +428,6 @@ export default class JenChart extends PureComponent {
       axisCustom,
       barPadding,
       borderBottom,
-      graphBarWidth,
       graphMarginVertical,
       platform,
       svgStyles
@@ -335,6 +465,8 @@ export default class JenChart extends PureComponent {
     // top axis and middle axis
     const middleValue = topValue / 2;
 
+    this._checkYear();
+
     return (
       <Svg style={svgStyles}>
         <G y={graphHeight + graphMarginVertical}>
@@ -352,22 +484,20 @@ export default class JenChart extends PureComponent {
 
         {data.map(item => (
           <G y={graphHeight + graphMarginVertical} key={'bar' + item.lastTransactionDate}>
-            {this._drawBars(item, graphBarWidth, x, y)}
+            {this._drawBars(item, x, y, topValue)}
             {this._drawCircle(item, x, y)}
           </G>
         ))}
 
         {data.map(
           (item, index, array) =>
-            index < array.length - 1 && (
-              <G
-                y={graphHeight + graphMarginVertical}
-                key={'line' + item.lastTransactionDate}
-              >
-                {this._drawLine(x, y, index, array)}
-                {this._drawSeparator(x, y, index, array, topValue)}
-              </G>
-            )
+            <G
+              y={graphHeight + graphMarginVertical}
+              key={'line' + item.lastTransactionDate}
+            >
+              {this._drawLine(x, y, index, array)}
+              {this._drawSeparator(x, y, index, array, topValue)}
+            </G>
         )}
 
         {data.map((item, index, array) =>
@@ -382,10 +512,7 @@ export default class JenChart extends PureComponent {
                 index,
                 item,
                 x,
-                graphBarWidth,
                 graphHeight,
-                graphMarginVertical,
-                platform
               )}
             </Svg>
           ) : (
@@ -397,10 +524,7 @@ export default class JenChart extends PureComponent {
                 index,
                 item,
                 x,
-                graphBarWidth,
                 graphHeight,
-                graphMarginVertical,
-                platform
               )}
             </G>
           )
@@ -411,18 +535,31 @@ export default class JenChart extends PureComponent {
 }
 
 JenChart.defaultProps = {
-  activeColor: '#00a4de',
+  activeColor: '#fff',
   activeIndex: 0,
   axisColor: '#f5f5f5',
   axisCustom: {},
+  axisLabelAlign: 'end',
   axisLabelColor: 'black',
-  axisLabelLeftPos: 5,
+  axisLabelPosX: 5,
+  axisLabelPosY: 3.5,
   axisLabelSize: 10,
+  axisPaddingLeft: 50,
   barColor: {},
   barLeftPos: 10,
   barPadding: 1,
   borderBottom: false,
   borderBottomProp: {},
+  bgActiveColor: '#a5a5a5',
+  rectActiveBgPosX: 2,
+  rectActiveBgPosY: 6,
+  rectActiveBgRad: 5,
+  rectActiveSize: {
+    height: 20,
+    width: 35
+  },
+  circleActiveBgPos: 4,
+  circleActiveBgRad: 11,
   circleStyle: {},
   data: [],
   fixTriangle: false,
@@ -435,6 +572,7 @@ JenChart.defaultProps = {
   graphMarginVertical: 40,
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   onPress: () => {},
+  singleYearPos: 5,
   separatorStyle: {},
   svgStyles: {},
   trianglePositionX: 10,
@@ -449,14 +587,24 @@ JenChart.propTypes = {
   activeIndex: PropTypes.number,
   axisColor: PropTypes.string,
   axisCustom: PropTypes.object,
+  axisLabelAlign: PropTypes.string,
   axisLabelColor: PropTypes.string,
-  axisLabelLeftPos: PropTypes.number,
+  axisLabelPosX: PropTypes.number,
+  axisLabelPosY: PropTypes.number,
   axisLabelSize: PropTypes.number,
+  axisPaddingLeft: PropTypes.number,
   barColor: PropTypes.object,
   barLeftPos: PropTypes.number,
   barPadding: PropTypes.number,
   borderBottom: PropTypes.bool,
   borderBottomProp: PropTypes.object,
+  bgActiveColor: PropTypes.string,
+  rectActiveBgPosX: PropTypes.number,
+  rectActiveBgPosY: PropTypes.number,
+  rectActiveBgRad: PropTypes.number,
+  rectActiveSize: PropTypes.object,
+  circleActiveBgPos: PropTypes.number,
+  circleActiveBgRad: PropTypes.number,
   circleStyle: PropTypes.object,
   fixTriangle: PropTypes.bool,
   graphBarWidth: PropTypes.number,
@@ -469,6 +617,7 @@ JenChart.propTypes = {
   months: PropTypes.array,
   onPress: PropTypes.func,
   separatorStyle: PropTypes.object,
+  singleYearPos: PropTypes.number,
   svgStyles: PropTypes.object,
   trianglePositionX: PropTypes.number,
   trianglePositionY: PropTypes.number,
