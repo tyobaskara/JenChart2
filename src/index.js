@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Svg, G, Line, Rect, Text, Circle, Image } from 'svgs';
 import * as d3 from 'd3';
 
-import { _formatAxisLabel, _getMonth, _getYear, _selectObject } from './jenchartUtil';
+import { _formatAxisLabel, _getMonth, _getYear, _selectObject } from './util';
 
 export default class JenChart extends PureComponent {
   constructor(props) {
