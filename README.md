@@ -207,541 +207,284 @@ Example:
 // examples/src/index.js
 
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { Svg, G, Line, Rect, Text, Circle, Image } from 'svgs';
-import * as d3 from 'd3';
+import { render } from 'react-dom';
+import JenChart from '../../src';
+import pfmData3 from './data3';
+import pfmData from './data';
+import pfmData12 from './data12';
 
-import { _formatAxisLabel, _getMonth, _getYear, _selectObject } from './util';
+import './styles.css';
+import triangle from '../../src/triangle.png';
+import { jenChartWrapper, jeenChartWrapper, titleStyle } from './styles';
 
-export default class JenChart extends PureComponent {
-  constructor(props) {
-    super(props);
+export default class App extends PureComponent {
+  state = {
+    jenchartWidth: null,
+    jeenchartWidth: null
+  };
 
-    this.state = {
-      data: this.props.data,
-      activeIndex: this.props.activeIndex,
-      separatorYear: []
-    };
-  }
-
-  _checkYear = () => {
-    this.state.data.map((item) => {
-      const getYear = _getYear(item.lastTransactionDate);
-      const { separatorYear } = this.state;
-
-      if (separatorYear.indexOf(getYear) === -1) {
-        const year = separatorYear;
-        year.push(getYear);
-        this.setState({
-          separatorYear: year
-        }, () => {
-          console.log('getYear');
-          console.log(separatorYear);
-        })
-      }
+  measure() {
+    this.setState({
+      jenchartWidth: this.jenchart.clientWidth,
+      jeenchartWidth: this.jeenchart.clientWidth
     });
   }
 
-  _axisLabel = (y, value, isInitial) => {
-    const { 
-      axisLabelColor, 
-      axisLabelSize, 
-      axisLabelPosX, 
-      axisLabelPosY 
-    } = this.props;
-
-    return (
-      <Text
-        x={axisLabelPosX}
-        y={y(value) * -1 + axisLabelPosY}
-        fontSize={axisLabelSize}
-        fill={axisLabelColor}
-        fillOpacity={0.4}
-        textAnchor={this.props.axisLabelAlign}
-      >
-        {isInitial ? 0 : _formatAxisLabel(value)}
-      </Text>
-    );
-  };
-
-  _drawAxis = (axisCustomProp, value, graphWidth, y, isInitial) => (
-    <G>
-      <Line
-        x1={this.props.axisPaddingLeft}
-        y1={y(value) * -1}
-        x2={graphWidth}
-        y2={y(value) * -1}
-        stroke={axisCustomProp.stroke}
-        strokeWidth={axisCustomProp.strokeWidth}
-      />
-
-      {this._axisLabel(y, value, isInitial)}
-    </G>
-  );
-
-  _drawBottomBorder = () => {
-    const { svgStyles, borderBottomProp, graphMarginVertical } = this.props;
-    const graphWidth = svgStyles.width;
-
-    return (
-      <Line x1='0' y1={graphMarginVertical} x2={graphWidth} y2={graphMarginVertical} {...borderBottomProp} />
-    );
-  };
-
-  _drawBottomLabels = (index, item, x, graphMarginVertical) => {
-    const {
-      activeColor,
-      barLeftPos,
-      circleActiveBgPos,
-      circleActiveBgRad,
-      rectActiveBgPosX,
-      rectActiveBgPosY,
-      rectActiveBgRad,
-      rectActiveSize,
-      bgActiveColor,
-      fixTriangle,
-      labelTopStyle,
-      labelTopPosition,
-      months,
-      trianglePositionX,
-      trianglePositionY,
-      triangleScale,
-      triangleSrc
-    } = this.props;
-    const { data } = this.state;
-    const isAboveSix = data.length > 6;
-
-    const labelActiveStyles = this._activeIndex(index)
-      ? {
-          fill: activeColor,
-          fontWeight: 600
-        }
-      : null;
-    const labelTopStyles = {
-      fill: '#7d7d7d',
-      fontSize: '10',
-      fontWeight: '600',
-      ...labelTopStyle,
-      ...labelActiveStyles
-    };
-    const triangleSize = triangleScale;
-    const triangleProps = fixTriangle
-      ? {
-          x: x(item.lastTransactionDate) - (triangleSize / 2) - trianglePositionX,
-          y: ((0 - graphMarginVertical) + triangleSize) - trianglePositionY
-        }
-      : {
-          x: x(item.lastTransactionDate) - trianglePositionX,
-          y: (graphMarginVertical - triangleSize) + trianglePositionY
-        };
-    const month = _getMonth(item.lastTransactionDate);
-
-    return (
-      <G key={'label' + item.lastTransactionDate}>
-        {/* Active circle background */}
-        {this._activeIndex(index) && isAboveSix && (
-          <Circle
-              cx={x(item.lastTransactionDate) + barLeftPos}
-              cy={labelTopPosition - circleActiveBgPos}
-              r={circleActiveBgRad}
-              fill={bgActiveColor}
-          />
-        )}
-        {/* Active rectangle background */}
-        {this._activeIndex(index) && !isAboveSix && (
-          <Rect
-            x={x(item.lastTransactionDate) + rectActiveBgPosX}
-            y={rectActiveBgPosY}
-            rx={rectActiveBgRad}
-            ry={rectActiveBgRad}
-            {...rectActiveSize}
-            fill={bgActiveColor}
-          />
-        )}
-
-        {/* Months */}
-        <Text
-          {...labelTopStyles}
-          x={x(item.lastTransactionDate) + barLeftPos}
-          y={labelTopPosition}
-          textAnchor='middle'
-        >
-          {isAboveSix ? month : months[month - 1]}
-        </Text>
-
-        {/* Image triangle active arrow */}
-        {this._activeIndex(index) && triangleSrc && (
-          <Image
-            href={triangleSrc}
-            preserveAspectRatio='xMidYMid slice'
-            height={triangleSize}
-            width={triangleSize}
-            opacity='1'
-            clipPath='url(#clip)'
-            {...triangleProps}
-          />
-        )}
-      </G>
-    );
-  };
-
-  _drawBars = (item, x, y, topValue) => {
-    const { barLeftPos, graphBarWidth } = this.props;
-    const barColors = {
-      barLeft: '#8fbc5a',
-      barRight: '#fc9d13',
-      ...this.props.barColor
-    };
-    const Income = _selectObject(item.pfmTypes, 'name', 'Income');
-    const Spending = _selectObject(item.pfmTypes, 'name', 'Spending');
-    const isLineCap = (value) => {
-      const val = (value / topValue) * 100;
-
-      return val > 5 ? true : false;
-    }
-
-    return (
-      <G>
-        <Line
-          x1={x(item.lastTransactionDate) + barLeftPos}
-          y1={y(0) * -1}
-          x2={x(item.lastTransactionDate) + barLeftPos}
-          y2={y(topValue) * -1}
-          stroke='#f5f5f5'
-          strokeWidth={graphBarWidth}
-          strokeLinecap='round'
-        />
-        <Line
-          x1={x(item.lastTransactionDate) + barLeftPos}
-          y1={y(0) * -1}
-          x2={x(item.lastTransactionDate) + barLeftPos}
-          y2={y(-topValue) * -1}
-          stroke='#f5f5f5'
-          strokeWidth={graphBarWidth}
-          strokeLinecap='round'
-        />
-
-        <Line
-          x1={x(item.lastTransactionDate) + barLeftPos}
-          y1={y(0) * -1}
-          x2={x(item.lastTransactionDate) + barLeftPos}
-          y2={y(-Spending.total) * -1}
-          stroke={barColors.barRight}
-          strokeWidth={graphBarWidth}
-        />
-        {isLineCap(Spending.total) && (
-          <Line
-            x1={x(item.lastTransactionDate) + barLeftPos}
-            y1={y(-Spending.total) * -1}
-            x2={x(item.lastTransactionDate) + barLeftPos}
-            y2={y(-Spending.total) * -1}
-            stroke={barColors.barRight}
-            strokeWidth={graphBarWidth}
-            strokeLinecap='round'
-          />
-        )}
-
-        <Line
-          x1={x(item.lastTransactionDate) + barLeftPos}
-          y1={y(0) * -1}
-          x2={x(item.lastTransactionDate) + barLeftPos}
-          y2={y(Income.total) * -1}
-          stroke={barColors.barLeft}
-          strokeWidth={graphBarWidth}
-        />
-        {isLineCap(Income.total) && (
-          <Line
-            x1={x(item.lastTransactionDate) + barLeftPos}
-            y1={y(Income.total) * -1}
-            x2={x(item.lastTransactionDate) + barLeftPos}
-            y2={y(Income.total) * -1}
-            stroke={barColors.barLeft}
-            strokeWidth={graphBarWidth}
-            strokeLinecap='round'
-          />
-        )}
-      </G>
-    );
-  };
-
-  _drawCircle = (item, x, y) => {
-    const { barLeftPos } = this.props;
-    const circleStyles = {
-      r: '3.5',
-      fill: '#00a4de',
-      ...this.props.circleStyle
-    };
-    const Net = _selectObject(item.pfmTypes, 'name', 'Net');
-
-    return (
-      <Circle
-        cx={x(item.lastTransactionDate) + barLeftPos}
-        cy={y(Net.total) * -1}
-        {...circleStyles}
-      />
-    );
-  };
-
-  _drawLine = (x, y, index, array) => {
-    if (index < array.length - 1) {
-      const { lineStyle, barLeftPos } = this.props;
-      const lineStyles = {
-        stroke: '#00a4de',
-        strokeWidth: 3,
-        ...lineStyle
-      };
-      const y1 = _selectObject(array[index].pfmTypes, 'name', 'Net');
-      const y2 = _selectObject(array[index + 1].pfmTypes, 'name', 'Net');
-  
-      return (
-        <Line
-          x1={x(array[index].lastTransactionDate) + barLeftPos}
-          y1={y(y1.total) * -1}
-          x2={x(array[index + 1].lastTransactionDate) + barLeftPos}
-          y2={y(y2.total) * -1}
-          {...lineStyles}
-        />
-      );
-    }
-  };
-
-  _drawSeparator = (x, y, index, array, topValue) => {
-    const { 
-      barLeftPos, 
-      labelBottomPosition, 
-      labelBottomStyle, 
-      singleYearPos ,
-      graphMarginVertical
-    } = this.props;
-    const { separatorYear } = this.state;
-    const nextIndex = index + 1;
-    
-    const pos = x(array[index].lastTransactionDate);
-
-    const labelBottomStyles = {
-      fill: '#7d7d7d',
-      fontSize: '10',
-      fontWeight: '400',
-      ...labelBottomStyle
-    };
-
-    const style = {
-      stroke: '#dfdfdf',
-      strokeDasharray: [3, 3],
-      strokeWidth: '3',
-      ...this.props.separatorStyle
-    };
-
-    if (index < array.length - 1) {
-
-      const getYear = _getYear(array[index].lastTransactionDate);
-      const nextGetYear = _getYear(array[nextIndex].lastTransactionDate);
-  
-      if (separatorYear.length > 1 && getYear !== nextGetYear) {
-        const posNext = x(array[nextIndex].lastTransactionDate);
-        const midPos = (pos + posNext) / 2;
-  
-        return (
-          <G>
-            <Line
-              x1={midPos + barLeftPos}
-              y1={y(topValue) * -1}
-              x2={midPos + barLeftPos}
-              y2={y(-topValue) * -1 + graphMarginVertical}
-              {...style}
-            />
-            <Text
-              {...labelBottomStyles}
-              x={pos + barLeftPos - singleYearPos}
-              y={labelBottomPosition}
-              textAnchor='middle'
-            >
-              {_getYear(array[index].lastTransactionDate)}
-            </Text>
-          </G>
-        )
-      }
-    }
-
-    if (separatorYear.length === 1 && nextIndex === array.length) {
-      return (
-        <G>
-          <Text
-            {...labelBottomStyles}
-            x={pos + barLeftPos - singleYearPos}
-            y={labelBottomPosition}
-            textAnchor='middle'
-          >
-            {_getYear(array[index].lastTransactionDate)}
-          </Text>
-        </G>
-      )
-    }
+  componentDidMount() {
+    this.measure();
   }
 
-  _getMaxValue = data =>
-    d3.max(data, d => {
-      const Income = _selectObject(d.pfmTypes, 'name', 'Income');
-      const Net = _selectObject(d.pfmTypes, 'name', 'Net');
-      const Spending = _selectObject(d.pfmTypes, 'name', 'Spending');
-      const maxOne =
-        Income.total > Spending.total ? Income.total : Spending.total;
-      const maxTwo = maxOne > Net.total ? maxOne : Net.total;
+  componentDidUpdate() {
+    this.measure();
+  }
 
-      return maxTwo;
+  _onPress = (index, item) => {
+    console.log(index, item);
+  };
+
+  _detectmob = () =>
+    window.innerWidth <= 800 && window.innerHeight <= 600 ? true : false;
+
+  _checkYear = (data) => {
+    const separatorYear = [];
+    const _getYear = str => {
+      return str.split('T')[0].split('-')[0];
+    };
+
+    data.map((item) => {
+      const year = _getYear(item.lastTransactionDate);
+
+      if (separatorYear.indexOf(year) === -1) {
+        separatorYear.push(year);
+      }
     });
-
-  _rectOnPress = (index, item) => {
-    this.setState({ activeIndex: index });
-    this.props.onPress(index, item);
-  };
-
-  _drawRectOnPress = (
-    index,
-    item,
-    x,
-    graphHeight,
-  ) => {
-    const { 
-      barLeftPos,
-      graphBarWidth,
-      graphMarginVertical,
-      platform 
-    } = this.props;
-    const propsOnpress = {};
-    const halfgraphBarWidth = graphBarWidth / 2;
-
-    if (platform !== 'web') {
-      propsOnpress.onPressIn = () => this._rectOnPress(index, item);
-    }
-
-    return (
-      <Rect
-        x={x(item.lastTransactionDate) + barLeftPos - halfgraphBarWidth - 5}
-        y={graphHeight * -1}
-        width={graphBarWidth * 2}
-        height={graphHeight + graphMarginVertical}
-        fill='transparent'
-        opacity='0.5'
-        {...propsOnpress}
-      />
-    );
-  };
-
-  _activeIndex = index => this.state.activeIndex === index && true;
+        
+    return separatorYear;
+  }
 
   render() {
-    const {
-      axisColor,
-      axisCustom,
-      barPadding,
-      borderBottom,
-      graphMarginVertical,
-      platform,
-      svgStyles
-    } = this.props;
-    const axisCustomProp = {
-      stroke: axisColor,
-      strokeDasharray: [3, 3],
-      strokeWidth: '3',
-      ...axisCustom
-    };
-
-    // Dimensions
-    const { data } = this.state;
-    const graphHeight = svgStyles.height - 2 * graphMarginVertical;
-    const graphWidth = svgStyles.width;
-
-    // X scale point
-    const xDomain = data.map(item => item.lastTransactionDate);
-    const xRange = [0, graphWidth];
-    const x = d3
-      .scalePoint()
-      .domain(xDomain)
-      .range(xRange)
-      .padding(barPadding);
-
-    // Y scale linear
-    const topValue = this._getMaxValue(data);
-    const yDomain = [-topValue, topValue];
-    const yRange = [0, graphHeight];
-    const y = d3
-      .scaleLinear()
-      .domain(yDomain)
-      .range(yRange);
-
-    // top axis and middle axis
-    const middleValue = topValue / 2;
-
-    this._checkYear();
-
     return (
-      <Svg style={svgStyles}>
-        <G y={graphHeight + graphMarginVertical}>
-          {this._drawAxis(axisCustomProp, topValue, graphWidth, y)}
-          {this._drawAxis(axisCustomProp, middleValue, graphWidth, y)}
-          {this._drawAxis(axisCustomProp, 0, graphWidth, y, 'initial')}
-          {this._drawAxis(axisCustomProp, -middleValue, graphWidth, y)}
-          {this._drawAxis(axisCustomProp, -topValue, graphWidth, y)}
-          {borderBottom && this._drawBottomBorder()}
-
-          {data.map((item, index, array) =>
-            this._drawBottomLabels(index, item, x, graphMarginVertical)
+      <div>
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData3.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              labelBottomPosition={40}
+              singleYearPos={6}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData3.data.pfmOverviews)}
+            />
           )}
-        </G>
+        </div>
 
-        {data.map(item => (
-          <G y={graphHeight + graphMarginVertical} key={'bar' + item.lastTransactionDate}>
-            {this._drawBars(item, x, y, topValue)}
-            {this._drawCircle(item, x, y)}
-          </G>
-        ))}
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              labelBottomPosition={40}
+              singleYearPos={6}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
+            />
+          )}
+        </div>
 
-        {data.map(
-          (item, index, array) =>
-            <G
-              y={graphHeight + graphMarginVertical}
-              key={'line' + item.lastTransactionDate}
-            >
-              {this._drawLine(x, y, index, array)}
-              {this._drawSeparator(x, y, index, array, topValue)}
-            </G>
-        )}
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData12.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              labelBottomPosition={40}
+              singleYearPos={6}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
+            />
+          )}
+        </div>
 
-        {data.map((item, index, array) =>
-          platform === 'web' ? (
-            <Svg
-              y={graphHeight + graphMarginVertical}
-              key={'rectOnPress' + item.lastTransactionDate}
-              onClick={() => this._rectOnPress(index, item)}
-              style={{ overflow: 'initial' }}
-            >
-              {this._drawRectOnPress(
-                index,
-                item,
-                x,
-                graphHeight,
-              )}
-            </Svg>
-          ) : (
-            <G
-              y={graphHeight + graphMarginVertical}
-              key={'rectOnPress' + item.lastTransactionDate}
-            >
-              {this._drawRectOnPress(
-                index,
-                item,
-                x,
-                graphHeight,
-              )}
-            </G>
-          )
-        )}
-      </Svg>
+        <div ref={ref => (this.jeenchart = ref)} style={jeenChartWrapper}>
+          <h1 style={titleStyle}>JenChart With Props</h1>
+          {this.state.jeenchartWidth && (
+            <JenChart
+              activeColor='green'
+              activeIndex={0}
+              axisColor='lightblue'
+              axisLabelColor='brown'
+              axisLabelPosX={60}
+              axisLabelSize={15}
+              axisPaddingLeft={70}
+              barColor={{ barLeft: 'green', barRight: 'blue' }}
+              circleStyle={{
+                r: '5',
+                fill: 'red'
+              }}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData.data.pfmOverviews}
+              labelTopStyle={{
+                fill: 'red',
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopPosition={20}
+              rectActiveBgPosX={-10}
+              rectActiveBgPosY={6}
+              rectActiveBgRad={5}
+              rectActiveSize={{
+                width: 40,
+                height: 20
+              }}
+              labelBottomStyle={{
+                fill: 'orange',
+                fontSize: '13',
+                fontWeight: '400'
+              }}
+              labelBottomPosition={30}
+              lineStyle={{
+                stroke: 'magenta',
+                strokeWidth: 3
+              }}
+              graphMarginVertical={50}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jeenchartWidth,
+                height: 450
+              }}
+              trianglePositionY={6}
+              trianglePositionX={-2}
+              triangleSrc={triangle}
+              triangleScale={15}
+              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
+            />
+          )}
+        </div>
+        
+      </div>
     );
   }
 }
 
+render(<App />, document.getElementById('root'));
+```
+
+## Props
+
+```
 JenChart.defaultProps = {
   activeColor: '#fff',
   activeIndex: 0,
@@ -782,6 +525,7 @@ JenChart.defaultProps = {
   onPress: () => {},
   singleYearPos: 5,
   separatorStyle: {},
+  separatorYear: [],
   svgStyles: {},
   trianglePositionX: 10,
   trianglePositionY: 0,
@@ -825,6 +569,7 @@ JenChart.propTypes = {
   months: PropTypes.array,
   onPress: PropTypes.func,
   separatorStyle: PropTypes.object,
+  separatorYear: PropTypes.array,
   singleYearPos: PropTypes.number,
   svgStyles: PropTypes.object,
   trianglePositionX: PropTypes.number,

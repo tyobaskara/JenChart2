@@ -12,27 +12,8 @@ export default class JenChart extends PureComponent {
     this.state = {
       data: this.props.data,
       activeIndex: this.props.activeIndex,
-      separatorYear: []
+      separatorYear: this.props.separatorYear
     };
-  }
-
-  componentWillMount() {
-    this._checkYear();
-  }
-
-  _checkYear = () => {
-    this.state.data.map((item) => {
-      const getYear = _getYear(item.lastTransactionDate);
-      const { separatorYear } = this.state;
-
-      if (separatorYear.indexOf(getYear) === -1) {
-        const year = separatorYear;
-        year.push(getYear);
-        this.setState({
-          separatorYear: year
-        });
-      }
-    });
   }
 
   _axisLabel = (y, value, isInitial) => {
@@ -573,6 +554,7 @@ JenChart.defaultProps = {
   onPress: () => {},
   singleYearPos: 5,
   separatorStyle: {},
+  separatorYear: [],
   svgStyles: {},
   trianglePositionX: 10,
   trianglePositionY: 0,
@@ -616,6 +598,7 @@ JenChart.propTypes = {
   months: PropTypes.array,
   onPress: PropTypes.func,
   separatorStyle: PropTypes.object,
+  separatorYear: PropTypes.array,
   singleYearPos: PropTypes.number,
   svgStyles: PropTypes.object,
   trianglePositionX: PropTypes.number,

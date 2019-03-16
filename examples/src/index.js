@@ -37,6 +37,23 @@ export default class App extends PureComponent {
   _detectmob = () =>
     window.innerWidth <= 800 && window.innerHeight <= 600 ? true : false;
 
+  _checkYear = (data) => {
+    const separatorYear = [];
+    const _getYear = str => {
+      return str.split('T')[0].split('-')[0];
+    };
+
+    data.map((item) => {
+      const year = _getYear(item.lastTransactionDate);
+
+      if (separatorYear.indexOf(year) === -1) {
+        separatorYear.push(year);
+      }
+    });
+        
+    return separatorYear;
+  }
+
   render() {
     return (
       <div>
@@ -84,6 +101,7 @@ export default class App extends PureComponent {
                 strokeDasharray: [3, 3],
                 strokeWidth: '1',
               }}
+              separatorYear={this._checkYear(pfmData3.data.pfmOverviews)}
             />
           )}
         </div>
@@ -132,6 +150,7 @@ export default class App extends PureComponent {
                 strokeDasharray: [3, 3],
                 strokeWidth: '1',
               }}
+              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
             />
           )}
         </div>
@@ -180,6 +199,7 @@ export default class App extends PureComponent {
                 strokeDasharray: [3, 3],
                 strokeWidth: '1',
               }}
+              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
             />
           )}
         </div>
@@ -241,6 +261,7 @@ export default class App extends PureComponent {
               trianglePositionX={-2}
               triangleSrc={triangle}
               triangleScale={15}
+              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
             />
           )}
         </div>
