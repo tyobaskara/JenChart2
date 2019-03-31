@@ -1,40 +1,107 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Svg, G, Line, Rect, Text, Circle, Image } from 'svgs';
+import { Svg, G, Line, Rect, Text as SText, Circle, Image } from 'svgs';
 import * as d3 from 'd3';
 
 import { _formatAxisLabel, _getMonth, _getYear, _selectObject } from './util';
 
-export default class JenChart extends Component {
+const emptyObj = {};
+const emptyArr = [];
+
+export default class JenChart extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       data: this.props.data,
       activeIndex: this.props.activeIndex,
-      separatorYear: this.props.separatorYear
+      separatorYear: this.props.separatorYear,
+      graphHeight: 0,
+      graphWidth: 0,
+      x: () => emptyObj,
+      y: () => emptyObj,
+      topValue: 0,
+      middleValue: 0,
+      isReady: false
     };
+  }
+
+  componentDidMount() {
+    const { data } = this.state;
+    const {
+      barPadding,
+      graphMarginVertical,
+      svgStyles,
+      platform,
+      isShowLabel
+    } = this.props;
+
+    const graphHeight = svgStyles.height - 2 * graphMarginVertical;
+    const graphWidth = svgStyles.width;
+
+    // X scale point
+    const xDomain = data.map(item => item.lastTransactionDate);
+    const xRange = [0, graphWidth];
+    const x = d3
+      .scalePoint()
+      .domain(xDomain)
+      .range(xRange)
+      .padding(barPadding);
+
+    // Y scale linear
+    const topValue = this._getMaxValue(data);
+    const yDomain = [-topValue, topValue];
+    const yRange = [0, graphHeight];
+    const y = d3
+      .scaleLinear()
+      .domain(yDomain)
+      .range(yRange);
+
+    // top axis and middle axis
+    const middleValue = topValue / 2;
+
+    this.setState({
+      graphHeight,
+      graphWidth,
+      x,
+      y,
+      platform,
+      topValue,
+      middleValue,
+      isReady: true
+    });
   }
 
   _axisLabel = (y, value, isInitial) => {
     const {
-      axisLabelColor,
+      labelColor,
       axisLabelSize,
+      fontFamily,
       axisLabelPosX,
-      axisLabelPosY
+      axisLabelPosY,
+      platform,
+      isShowLabel
     } = this.props;
 
-    return (
-      <Text
+    const isNotAndroid = platform !== 'android' ? {
+      fill: labelColor,
+      textAnchor: this.props.axisLabelAlign
+    } : emptyObj;
+
+    const fontFml = fontFamily ? {
+      fontFamily
+    } : emptyObj;
+
+    return isShowLabel && (
+      <SText
         x={axisLabelPosX}
         y={y(value) * -1 + axisLabelPosY}
         fontSize={axisLabelSize}
-        fill={axisLabelColor}
-        fillOpacity={0.4}
-        textAnchor={this.props.axisLabelAlign}
+        {...fontFml}
+        {...isNotAndroid}
       >
         {isInitial ? 0 : _formatAxisLabel(value)}
-      </Text>
+      </SText>
     );
   };
 
@@ -65,39 +132,55 @@ export default class JenChart extends Component {
   _drawBottomLabels = (index, item, x, graphMarginVertical) => {
     const {
       activeColor,
-      barLeftPos,
       circleActiveBgPos,
       circleActiveBgRad,
+      labelColor,
       rectActiveBgPosX,
       rectActiveBgPosY,
       rectActiveBgRad,
       rectActiveSize,
-      bgActiveColor,
       fixTriangle,
       labelTopStyle,
-      labelTopPosition,
+      labelTopVerticalPosition,
+      marginLeftMonthLabel,
+      marginCircleActiveBg,
       months,
+      platform,
       trianglePositionX,
       trianglePositionY,
       triangleScale,
-      triangleSrc
+      triangleSrc,
+      isShowLabel
     } = this.props;
     const { data } = this.state;
-    const isAboveSix = data.length > 6;
+    const isAboveSixMonth = data.length > 6;
 
+    // Active Style
+    const isNotAndroidActiveColor = platform !== 'android' ? {
+      fill: activeColor
+    } : emptyObj;
     const labelActiveStyles = this._activeIndex(index)
       ? {
-          fill: activeColor,
-          fontWeight: '600'
-        }
-      : null;
+          fontWeight: '600',
+          ...isNotAndroidActiveColor
+        } : { fontWeight: '600' };
+
+    // Default Style include Active Style
+    const isAndroidDefaultColor = platform === 'android' ? emptyObj : {
+      fill: labelColor,
+      textAnchor: 'middle'
+    };
     const labelTopStyles = {
-      fill: '#7d7d7d',
       fontSize: '10',
-      fontWeight: '600',
+      fontWeight: '400',
+      ...isAndroidDefaultColor,
       ...labelTopStyle,
       ...labelActiveStyles
     };
+
+    // Active Fill Android Style
+    const activeFill = platform === 'android' ? activeColor : 'transparent';
+
     const triangleSize = triangleScale;
     const triangleProps = fixTriangle
       ? {
@@ -113,35 +196,40 @@ export default class JenChart extends Component {
     return (
       <G key={'label' + item.lastTransactionDate}>
         {/* Active circle background */}
-        {this._activeIndex(index) && isAboveSix && (
+        {this._activeIndex(index) && isAboveSixMonth && (
           <Circle
-              cx={x(item.lastTransactionDate) + barLeftPos}
-              cy={labelTopPosition - circleActiveBgPos}
-              r={circleActiveBgRad}
-              fill={bgActiveColor}
+            cx={x(item.lastTransactionDate) + marginCircleActiveBg}
+            cy={labelTopVerticalPosition - circleActiveBgPos}
+            r={circleActiveBgRad}
+            stroke={activeColor}
+            strokeWidth={1}
+            fill={activeFill}
           />
         )}
         {/* Active rectangle background */}
-        {this._activeIndex(index) && !isAboveSix && (
+        {this._activeIndex(index) && !isAboveSixMonth && (
           <Rect
             x={x(item.lastTransactionDate) + rectActiveBgPosX}
             y={rectActiveBgPosY}
             rx={rectActiveBgRad}
             ry={rectActiveBgRad}
             {...rectActiveSize}
-            fill={bgActiveColor}
+            stroke={activeColor}
+            strokeWidth={1}
+            fill={activeFill}
           />
         )}
 
-        {/* Months */}
-        <Text
-          {...labelTopStyles}
-          x={x(item.lastTransactionDate) + barLeftPos}
-          y={labelTopPosition}
-          textAnchor='middle'
-        >
-          {isAboveSix ? month : months[month - 1]}
-        </Text>
+        {/* Months Label */}
+        {isShowLabel && (
+          <SText
+            {...labelTopStyles}
+            x={x(item.lastTransactionDate) + marginLeftMonthLabel}
+            y={labelTopVerticalPosition}
+          >
+            {isAboveSixMonth ? month : months[month - 1]}
+          </SText>
+        )}
 
         {/* Image triangle active arrow */}
         {this._activeIndex(index) && triangleSrc && (
@@ -282,20 +370,26 @@ export default class JenChart extends Component {
   _drawSeparator = (x, y, index, array, topValue) => {
     const {
       barLeftPos,
-      labelBottomPosition,
+      labelBottomVerticalPosition,
       labelBottomStyle,
-      singleYearPos ,
-      graphMarginVertical
+      labelColor,
+      singleYearHorizontalPos,
+      graphMarginVertical,
+      platform,
+      isShowLabel
     } = this.props;
     const { separatorYear } = this.state;
     const nextIndex = index + 1;
 
     const pos = x(array[index].lastTransactionDate);
 
+    const isAndroidDefaultColor = platform === 'android' ? emptyObj : {
+      fill: labelColor
+    };
     const labelBottomStyles = {
-      fill: '#7d7d7d',
       fontSize: '10',
       fontWeight: '400',
+      ...isAndroidDefaultColor,
       ...labelBottomStyle
     };
 
@@ -324,30 +418,35 @@ export default class JenChart extends Component {
               y2={y(-topValue) * -1 + graphMarginVertical}
               {...style}
             />
-            <Text
-              {...labelBottomStyles}
-              x={pos + barLeftPos - singleYearPos}
-              y={labelBottomPosition}
-              textAnchor='middle'
-            >
-              {_getYear(array[index].lastTransactionDate)}
-            </Text>
+            {isShowLabel && (
+              <SText
+                {...labelBottomStyles}
+                x={midPos + barLeftPos - singleYearHorizontalPos}
+                y={labelBottomVerticalPosition}
+              >
+                {_getYear(array[index].lastTransactionDate)}
+              </SText>
+            )}
           </G>
         )
       }
     }
 
     if (separatorYear.length === 1 && nextIndex === array.length) {
-      return (
+      const textAnchor = platform === 'android' ? emptyObj : {
+        textAnchor: 'middle'
+      };
+
+      return isShowLabel && (
         <G>
-          <Text
+          <SText
             {...labelBottomStyles}
-            x={pos + barLeftPos - singleYearPos}
-            y={labelBottomPosition}
-            textAnchor='middle'
+            x={pos + barLeftPos}
+            y={labelBottomVerticalPosition}
+            {...textAnchor}
           >
             {_getYear(array[index].lastTransactionDate)}
-          </Text>
+          </SText>
         </G>
       )
     }
@@ -382,7 +481,7 @@ export default class JenChart extends Component {
       graphMarginVertical,
       platform
     } = this.props;
-    const propsOnpress = {};
+    const propsOnpress = emptyObj;
     const halfgraphBarWidth = graphBarWidth / 2;
 
     if (platform !== 'web') {
@@ -408,12 +507,12 @@ export default class JenChart extends Component {
     const {
       axisColor,
       axisCustom,
-      barPadding,
       borderBottom,
       graphMarginVertical,
       platform,
       svgStyles
     } = this.props;
+
     const axisCustomProp = {
       stroke: axisColor,
       strokeDasharray: [3, 3],
@@ -421,33 +520,19 @@ export default class JenChart extends Component {
       ...axisCustom
     };
 
-    // Dimensions
-    const { data } = this.state;
-    const graphHeight = svgStyles.height - 2 * graphMarginVertical;
-    const graphWidth = svgStyles.width;
+    const {
+      data,
+      graphHeight,
+      graphWidth,
+      x,
+      y,
+      topValue,
+      middleValue,
+      isReady
+    } = this.state;
 
-    // X scale point
-    const xDomain = data.map(item => item.lastTransactionDate);
-    const xRange = [0, graphWidth];
-    const x = d3
-      .scalePoint()
-      .domain(xDomain)
-      .range(xRange)
-      .padding(barPadding);
 
-    // Y scale linear
-    const topValue = this._getMaxValue(data);
-    const yDomain = [-topValue, topValue];
-    const yRange = [0, graphHeight];
-    const y = d3
-      .scaleLinear()
-      .domain(yDomain)
-      .range(yRange);
-
-    // top axis and middle axis
-    const middleValue = topValue / 2;
-
-    return (
+    return isReady && (
       <Svg style={svgStyles}>
         <G y={graphHeight + graphMarginVertical}>
           {this._drawAxis(axisCustomProp, topValue, graphWidth, y)}
@@ -518,19 +603,20 @@ JenChart.defaultProps = {
   activeColor: '#fff',
   activeIndex: 0,
   axisColor: '#f5f5f5',
-  axisCustom: {},
+  axisCustom: emptyObj,
   axisLabelAlign: 'end',
-  axisLabelColor: 'black',
+  labelColor: 'black',
   axisLabelPosX: 5,
   axisLabelPosY: 3.5,
   axisLabelSize: 10,
   axisPaddingLeft: 50,
-  barColor: {},
+  barColor: emptyObj,
   barLeftPos: 10,
+  marginLeftMonthLabel: 20,
+  marginCircleActiveBg: 20,
   barPadding: 1,
   borderBottom: false,
-  borderBottomProp: {},
-  bgActiveColor: '#a5a5a5',
+  borderBottomProp: emptyObj,
   rectActiveBgPosX: 2,
   rectActiveBgPosY: 6,
   rectActiveBgRad: 5,
@@ -540,22 +626,24 @@ JenChart.defaultProps = {
   },
   circleActiveBgPos: 4,
   circleActiveBgRad: 11,
-  circleStyle: {},
-  data: [],
+  circleStyle: emptyObj,
+  data: emptyArr,
   fixTriangle: false,
+  fontFamily: '',
   graphBarWidth: 10,
-  labelTopStyle: {},
-  labelTopPosition: 15,
-  labelBottomStyle: {},
-  labelBottomPosition: 25,
-  lineStyle: {},
   graphMarginVertical: 40,
+  isShowLabel: true,
+  labelTopStyle: emptyObj,
+  labelTopVerticalPosition: 15,
+  labelBottomStyle: emptyObj,
+  labelBottomVerticalPosition: 25,
+  lineStyle: emptyObj,
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  onPress: () => {},
-  singleYearPos: 5,
-  separatorStyle: {},
-  separatorYear: [],
-  svgStyles: {},
+  onPress: () => emptyObj,
+  singleYearHorizontalPos: 5,
+  separatorStyle: emptyObj,
+  separatorYear: emptyArr,
+  svgStyles: emptyObj,
   trianglePositionX: 10,
   trianglePositionY: 0,
   triangleScale: 10
@@ -569,17 +657,18 @@ JenChart.propTypes = {
   axisColor: PropTypes.string,
   axisCustom: PropTypes.object,
   axisLabelAlign: PropTypes.string,
-  axisLabelColor: PropTypes.string,
+  labelColor: PropTypes.string,
   axisLabelPosX: PropTypes.number,
   axisLabelPosY: PropTypes.number,
   axisLabelSize: PropTypes.number,
   axisPaddingLeft: PropTypes.number,
   barColor: PropTypes.object,
   barLeftPos: PropTypes.number,
+  marginLeftMonthLabel: PropTypes.number,
+  marginCircleActiveBg: PropTypes.number,
   barPadding: PropTypes.number,
   borderBottom: PropTypes.bool,
   borderBottomProp: PropTypes.object,
-  bgActiveColor: PropTypes.string,
   rectActiveBgPosX: PropTypes.number,
   rectActiveBgPosY: PropTypes.number,
   rectActiveBgRad: PropTypes.number,
@@ -588,18 +677,20 @@ JenChart.propTypes = {
   circleActiveBgRad: PropTypes.number,
   circleStyle: PropTypes.object,
   fixTriangle: PropTypes.bool,
+  fontFamily: PropTypes.string,
   graphBarWidth: PropTypes.number,
   graphMarginVertical: PropTypes.number,
+  isShowLabel: PropTypes.bool,
   labelTopStyle: PropTypes.object,
-  labelTopPosition: PropTypes.number,
+  labelTopVerticalPosition: PropTypes.number,
   labelBottomStyle: PropTypes.object,
-  labelBottomPosition: PropTypes.number,
+  labelBottomVerticalPosition: PropTypes.number,
   lineStyle: PropTypes.object,
   months: PropTypes.array,
   onPress: PropTypes.func,
   separatorStyle: PropTypes.object,
   separatorYear: PropTypes.array,
-  singleYearPos: PropTypes.number,
+  singleYearHorizontalPos: PropTypes.number,
   svgStyles: PropTypes.object,
   trianglePositionX: PropTypes.number,
   trianglePositionY: PropTypes.number,

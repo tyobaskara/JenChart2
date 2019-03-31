@@ -66,6 +66,7 @@ export default class App extends PureComponent {
                 width: this.state.jenchartWidth,
                 height: 250
               }}
+              activeColor='green'
               activeIndex={1}
               axisLabelSize={this._detectmob() ? 11 : 11}
               axisLabelPosX={45}
@@ -90,9 +91,9 @@ export default class App extends PureComponent {
                 fontSize: '13',
                 fontWeight: '600'
               }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
               graphMarginVertical={60}
               onPress={(index, item) => this._onPress(index, item)}
               platform='web'
@@ -115,6 +116,7 @@ export default class App extends PureComponent {
                 width: this.state.jenchartWidth,
                 height: 250
               }}
+              activeColor='black'
               activeIndex={1}
               axisLabelSize={this._detectmob() ? 11 : 11}
               axisLabelPosX={45}
@@ -139,9 +141,9 @@ export default class App extends PureComponent {
                 fontSize: '13',
                 fontWeight: '600'
               }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
               graphMarginVertical={60}
               onPress={(index, item) => this._onPress(index, item)}
               platform='web'
@@ -164,6 +166,7 @@ export default class App extends PureComponent {
                 width: this.state.jenchartWidth,
                 height: 250
               }}
+              activeColor='black'
               activeIndex={1}
               axisLabelSize={this._detectmob() ? 11 : 11}
               axisLabelPosX={45}
@@ -188,9 +191,9 @@ export default class App extends PureComponent {
                 fontSize: '13',
                 fontWeight: '600'
               }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
               graphMarginVertical={60}
               onPress={(index, item) => this._onPress(index, item)}
               platform='web'
@@ -208,6 +211,11 @@ export default class App extends PureComponent {
           <h1 style={titleStyle}>JenChart With Props</h1>
           {this.state.jeenchartWidth && (
             <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jeenchartWidth,
+                height: 450
+              }}
               activeColor='green'
               activeIndex={0}
               axisColor='lightblue'
@@ -215,53 +223,58 @@ export default class App extends PureComponent {
               axisLabelPosX={60}
               axisLabelSize={15}
               axisPaddingLeft={70}
-              barColor={{ barLeft: 'green', barRight: 'blue' }}
-              circleStyle={{
-                r: '5',
-                fill: 'red'
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
               }}
+              barColor={{ barLeft: 'green', barRight: 'blue' }}
+              barPadding={2}
+              barLeftPos={20}
               borderBottom
               borderBottomProp={{
                 stroke: '#dfdfdf',
                 strokeWidth: 2
               }}
-              data={pfmData.data.pfmOverviews}
+              circleStyle={{
+                r: '5',
+                fill: 'red'
+              }}
+              data={pfmData12.data.pfmOverviews}
               labelTopStyle={{
                 fill: 'red',
-                fontSize: '13',
-                fontWeight: '600'
+                fontSize: '13'
               }}
-              labelTopPosition={20}
-              rectActiveBgPosX={-10}
+              labelTopVerticalPosition={20}
+              labelBottomStyle={{
+                fill: 'orange',
+                fontSize: '13'
+              }}
+              labelBottomVerticalPosition={40}
+              rectActiveBgPosX={2}
               rectActiveBgPosY={6}
               rectActiveBgRad={5}
               rectActiveSize={{
-                width: 40,
-                height: 20
+                height: 20,
+                width: 35
               }}
-              labelBottomStyle={{
-                fill: 'orange',
-                fontSize: '13',
-                fontWeight: '400'
-              }}
-              labelBottomPosition={30}
               lineStyle={{
-                stroke: 'magenta',
+                stroke: 'orange',
                 strokeWidth: 3
               }}
-              graphMarginVertical={50}
+              singleYearHorizontalPos={35}
+              graphMarginVertical={60}
               onPress={(index, item) => this._onPress(index, item)}
               platform='web'
-              svgStyles={{
-                backgroundColor: '#fff',
-                width: this.state.jeenchartWidth,
-                height: 450
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
               }}
+              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
               trianglePositionY={6}
-              trianglePositionX={-2}
+              trianglePositionX={-12}
               triangleSrc={triangle}
               triangleScale={15}
-              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
             />
           )}
         </div>

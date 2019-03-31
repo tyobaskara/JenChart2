@@ -32,6 +32,420 @@ React Native with expo:
  />
 ```
 
+## Options Props
+
+```
+  isShowLabel = to show / hide all label from chart svg
+
+  // If android build not support component text svgs (crash on build)
+  platform = 'android' 
+
+  // If android build support component text svgs
+  platform = 'mobile'
+
+  // If web
+  platform = 'web'
+```
+
+## Usage
+
+Example:
+
+```
+// examples/src/index.js
+
+import React, { PureComponent } from 'react';
+import { render } from 'react-dom';
+import JenChart from '../../src';
+import pfmData3 from './data3';
+import pfmData from './data';
+import pfmData12 from './data12';
+
+import './styles.css';
+import triangle from '../../src/triangle.png';
+import { jenChartWrapper, jeenChartWrapper, titleStyle } from './styles';
+
+export default class App extends PureComponent {
+  state = {
+    jenchartWidth: null,
+    jeenchartWidth: null
+  };
+
+  measure() {
+    this.setState({
+      jenchartWidth: this.jenchart.clientWidth,
+      jeenchartWidth: this.jeenchart.clientWidth
+    });
+  }
+
+  componentDidMount() {
+    this.measure();
+  }
+
+  componentDidUpdate() {
+    this.measure();
+  }
+
+  _onPress = (index, item) => {
+    console.log(index, item);
+  };
+
+  _detectmob = () =>
+    window.innerWidth <= 800 && window.innerHeight <= 600 ? true : false;
+
+  _checkYear = (data) => {
+    const separatorYear = [];
+    const _getYear = str => {
+      return str.split('T')[0].split('-')[0];
+    };
+
+    data.map((item) => {
+      const year = _getYear(item.lastTransactionDate);
+
+      if (separatorYear.indexOf(year) === -1) {
+        separatorYear.push(year);
+      }
+    });
+        
+    return separatorYear;
+  }
+
+  render() {
+    return (
+      <div>
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeColor='green'
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData3.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData3.data.pfmOverviews)}
+            />
+          )}
+        </div>
+
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeColor='black'
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
+            />
+          )}
+        </div>
+
+        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
+          <h1 style={titleStyle}>JenChart Default</h1>
+          {this.state.jenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jenchartWidth,
+                height: 250
+              }}
+              activeColor='black'
+              activeIndex={1}
+              axisLabelSize={this._detectmob() ? 11 : 11}
+              axisLabelPosX={45}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              axisPaddingLeft={50}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              data={pfmData12.data.pfmOverviews}
+              labelTopStyle={{
+                fontSize: '13',
+                fontWeight: '500'
+              }}
+              labelBottomStyle={{
+                fontSize: '13',
+                fontWeight: '600'
+              }}
+              labelTopVerticalPosition={20}
+              labelBottomVerticalPosition={40}
+              singleYearHorizontalPos={35}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
+            />
+          )}
+        </div>
+
+        <div ref={ref => (this.jeenchart = ref)} style={jeenChartWrapper}>
+          <h1 style={titleStyle}>JenChart With Props</h1>
+          {this.state.jeenchartWidth && (
+            <JenChart
+              svgStyles={{
+                backgroundColor: '#fff',
+                width: this.state.jeenchartWidth,
+                height: 450
+              }}
+              activeColor='green'
+              activeIndex={0}
+              axisColor='lightblue'
+              axisLabelColor='brown'
+              axisLabelPosX={60}
+              axisLabelSize={15}
+              axisPaddingLeft={70}
+              axisCustom={{
+                strokeDasharray: [0, 0],
+                strokeWidth: 2
+              }}
+              barColor={{ barLeft: 'green', barRight: 'blue' }}
+              barPadding={2}
+              barLeftPos={20}
+              borderBottom
+              borderBottomProp={{
+                stroke: '#dfdfdf',
+                strokeWidth: 2
+              }}
+              circleStyle={{
+                r: '5',
+                fill: 'red'
+              }}
+              data={pfmData12.data.pfmOverviews}
+              labelTopStyle={{
+                fill: 'red',
+                fontSize: '13'
+              }}
+              labelTopVerticalPosition={20}
+              labelBottomStyle={{
+                fill: 'orange',
+                fontSize: '13'
+              }}
+              labelBottomVerticalPosition={40}
+              rectActiveBgPosX={2}
+              rectActiveBgPosY={6}
+              rectActiveBgRad={5}
+              rectActiveSize={{
+                height: 20,
+                width: 35
+              }}
+              lineStyle={{
+                stroke: 'orange',
+                strokeWidth: 3
+              }}
+              singleYearHorizontalPos={35}
+              graphMarginVertical={60}
+              onPress={(index, item) => this._onPress(index, item)}
+              platform='web'
+              separatorStyle={{
+                stroke: '#dfdfdf',
+                strokeDasharray: [3, 3],
+                strokeWidth: '1',
+              }}
+              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
+              trianglePositionY={6}
+              trianglePositionX={-12}
+              triangleSrc={triangle}
+              triangleScale={15}
+            />
+          )}
+        </div>
+        
+      </div>
+    );
+  }
+}
+
+render(<App />, document.getElementById('root'));
+
+```
+
+## Props
+
+```
+JenChart.defaultProps = {
+  activeColor: '#fff',
+  activeIndex: 0,
+  axisColor: '#f5f5f5',
+  axisCustom: emptyObj,
+  axisLabelAlign: 'end',
+  labelColor: 'black',
+  axisLabelPosX: 5,
+  axisLabelPosY: 3.5,
+  axisLabelSize: 10,
+  axisPaddingLeft: 50,
+  barColor: emptyObj,
+  barLeftPos: 10,
+  marginLeftMonthLabel: 20,
+  marginCircleActiveBg: 20,
+  barPadding: 1,
+  borderBottom: false,
+  borderBottomProp: emptyObj,
+  rectActiveBgPosX: 2,
+  rectActiveBgPosY: 6,
+  rectActiveBgRad: 5,
+  rectActiveSize: {
+    height: 20,
+    width: 35
+  },
+  circleActiveBgPos: 4,
+  circleActiveBgRad: 11,
+  circleStyle: emptyObj,
+  data: emptyArr,
+  fixTriangle: false,
+  fontFamily: '',
+  graphBarWidth: 10,
+  graphMarginVertical: 40,
+  isShowLabel: true,
+  labelTopStyle: emptyObj,
+  labelTopVerticalPosition: 15,
+  labelBottomStyle: emptyObj,
+  labelBottomVerticalPosition: 25,
+  lineStyle: emptyObj,
+  months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  onPress: () => emptyObj,
+  singleYearHorizontalPos: 5,
+  separatorStyle: emptyObj,
+  separatorYear: emptyArr,
+  svgStyles: emptyObj,
+  trianglePositionX: 10,
+  trianglePositionY: 0,
+  triangleScale: 10
+};
+
+JenChart.propTypes = {
+  data: PropTypes.array.isRequired,
+  platform: PropTypes.string.isRequired,
+  activeColor: PropTypes.string,
+  activeIndex: PropTypes.number,
+  axisColor: PropTypes.string,
+  axisCustom: PropTypes.object,
+  axisLabelAlign: PropTypes.string,
+  labelColor: PropTypes.string,
+  axisLabelPosX: PropTypes.number,
+  axisLabelPosY: PropTypes.number,
+  axisLabelSize: PropTypes.number,
+  axisPaddingLeft: PropTypes.number,
+  barColor: PropTypes.object,
+  barLeftPos: PropTypes.number,
+  marginLeftMonthLabel: PropTypes.number,
+  marginCircleActiveBg: PropTypes.number,
+  barPadding: PropTypes.number,
+  borderBottom: PropTypes.bool,
+  borderBottomProp: PropTypes.object,
+  rectActiveBgPosX: PropTypes.number,
+  rectActiveBgPosY: PropTypes.number,
+  rectActiveBgRad: PropTypes.number,
+  rectActiveSize: PropTypes.object,
+  circleActiveBgPos: PropTypes.number,
+  circleActiveBgRad: PropTypes.number,
+  circleStyle: PropTypes.object,
+  fixTriangle: PropTypes.bool,
+  fontFamily: PropTypes.string,
+  graphBarWidth: PropTypes.number,
+  graphMarginVertical: PropTypes.number,
+  isShowLabel: PropTypes.bool,
+  labelTopStyle: PropTypes.object,
+  labelTopVerticalPosition: PropTypes.number,
+  labelBottomStyle: PropTypes.object,
+  labelBottomVerticalPosition: PropTypes.number,
+  lineStyle: PropTypes.object,
+  months: PropTypes.array,
+  onPress: PropTypes.func,
+  separatorStyle: PropTypes.object,
+  separatorYear: PropTypes.array,
+  singleYearHorizontalPos: PropTypes.number,
+  svgStyles: PropTypes.object,
+  trianglePositionX: PropTypes.number,
+  trianglePositionY: PropTypes.number,
+  triangleScale: PropTypes.number
+};
+```
+
 ## Data
 
 ```
@@ -197,383 +611,4 @@ export default {
     },
     ...
 }
-```
-
-## Usage
-
-Example:
-
-```
-// examples/src/index.js
-
-import React, { PureComponent } from 'react';
-import { render } from 'react-dom';
-import JenChart from '../../src';
-import pfmData3 from './data3';
-import pfmData from './data';
-import pfmData12 from './data12';
-
-import './styles.css';
-import triangle from '../../src/triangle.png';
-import { jenChartWrapper, jeenChartWrapper, titleStyle } from './styles';
-
-export default class App extends PureComponent {
-  state = {
-    jenchartWidth: null,
-    jeenchartWidth: null
-  };
-
-  measure() {
-    this.setState({
-      jenchartWidth: this.jenchart.clientWidth,
-      jeenchartWidth: this.jeenchart.clientWidth
-    });
-  }
-
-  componentDidMount() {
-    this.measure();
-  }
-
-  componentDidUpdate() {
-    this.measure();
-  }
-
-  _onPress = (index, item) => {
-    console.log(index, item);
-  };
-
-  _detectmob = () =>
-    window.innerWidth <= 800 && window.innerHeight <= 600 ? true : false;
-
-  _checkYear = (data) => {
-    const separatorYear = [];
-    const _getYear = str => {
-      return str.split('T')[0].split('-')[0];
-    };
-
-    data.map((item) => {
-      const year = _getYear(item.lastTransactionDate);
-
-      if (separatorYear.indexOf(year) === -1) {
-        separatorYear.push(year);
-      }
-    });
-        
-    return separatorYear;
-  }
-
-  render() {
-    return (
-      <div>
-        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
-          <h1 style={titleStyle}>JenChart Default</h1>
-          {this.state.jenchartWidth && (
-            <JenChart
-              svgStyles={{
-                backgroundColor: '#fff',
-                width: this.state.jenchartWidth,
-                height: 250
-              }}
-              activeIndex={1}
-              axisLabelSize={this._detectmob() ? 11 : 11}
-              axisLabelPosX={45}
-              axisCustom={{
-                strokeDasharray: [0, 0],
-                strokeWidth: 2
-              }}
-              axisPaddingLeft={50}
-              barPadding={2}
-              barLeftPos={20}
-              borderBottom
-              borderBottomProp={{
-                stroke: '#dfdfdf',
-                strokeWidth: 2
-              }}
-              data={pfmData3.data.pfmOverviews}
-              labelTopStyle={{
-                fontSize: '13',
-                fontWeight: '500'
-              }}
-              labelBottomStyle={{
-                fontSize: '13',
-                fontWeight: '600'
-              }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
-              graphMarginVertical={60}
-              onPress={(index, item) => this._onPress(index, item)}
-              platform='web'
-              separatorStyle={{
-                stroke: '#dfdfdf',
-                strokeDasharray: [3, 3],
-                strokeWidth: '1',
-              }}
-              separatorYear={this._checkYear(pfmData3.data.pfmOverviews)}
-            />
-          )}
-        </div>
-
-        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
-          <h1 style={titleStyle}>JenChart Default</h1>
-          {this.state.jenchartWidth && (
-            <JenChart
-              svgStyles={{
-                backgroundColor: '#fff',
-                width: this.state.jenchartWidth,
-                height: 250
-              }}
-              activeIndex={1}
-              axisLabelSize={this._detectmob() ? 11 : 11}
-              axisLabelPosX={45}
-              axisCustom={{
-                strokeDasharray: [0, 0],
-                strokeWidth: 2
-              }}
-              axisPaddingLeft={50}
-              barPadding={2}
-              barLeftPos={20}
-              borderBottom
-              borderBottomProp={{
-                stroke: '#dfdfdf',
-                strokeWidth: 2
-              }}
-              data={pfmData.data.pfmOverviews}
-              labelTopStyle={{
-                fontSize: '13',
-                fontWeight: '500'
-              }}
-              labelBottomStyle={{
-                fontSize: '13',
-                fontWeight: '600'
-              }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
-              graphMarginVertical={60}
-              onPress={(index, item) => this._onPress(index, item)}
-              platform='web'
-              separatorStyle={{
-                stroke: '#dfdfdf',
-                strokeDasharray: [3, 3],
-                strokeWidth: '1',
-              }}
-              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
-            />
-          )}
-        </div>
-
-        <div ref={ref => (this.jenchart = ref)} style={jenChartWrapper}>
-          <h1 style={titleStyle}>JenChart Default</h1>
-          {this.state.jenchartWidth && (
-            <JenChart
-              svgStyles={{
-                backgroundColor: '#fff',
-                width: this.state.jenchartWidth,
-                height: 250
-              }}
-              activeIndex={1}
-              axisLabelSize={this._detectmob() ? 11 : 11}
-              axisLabelPosX={45}
-              axisCustom={{
-                strokeDasharray: [0, 0],
-                strokeWidth: 2
-              }}
-              axisPaddingLeft={50}
-              barPadding={2}
-              barLeftPos={20}
-              borderBottom
-              borderBottomProp={{
-                stroke: '#dfdfdf',
-                strokeWidth: 2
-              }}
-              data={pfmData12.data.pfmOverviews}
-              labelTopStyle={{
-                fontSize: '13',
-                fontWeight: '500'
-              }}
-              labelBottomStyle={{
-                fontSize: '13',
-                fontWeight: '600'
-              }}
-              labelTopPosition={20}
-              labelBottomPosition={40}
-              singleYearPos={6}
-              graphMarginVertical={60}
-              onPress={(index, item) => this._onPress(index, item)}
-              platform='web'
-              separatorStyle={{
-                stroke: '#dfdfdf',
-                strokeDasharray: [3, 3],
-                strokeWidth: '1',
-              }}
-              separatorYear={this._checkYear(pfmData12.data.pfmOverviews)}
-            />
-          )}
-        </div>
-
-        <div ref={ref => (this.jeenchart = ref)} style={jeenChartWrapper}>
-          <h1 style={titleStyle}>JenChart With Props</h1>
-          {this.state.jeenchartWidth && (
-            <JenChart
-              activeColor='green'
-              activeIndex={0}
-              axisColor='lightblue'
-              axisLabelColor='brown'
-              axisLabelPosX={60}
-              axisLabelSize={15}
-              axisPaddingLeft={70}
-              barColor={{ barLeft: 'green', barRight: 'blue' }}
-              circleStyle={{
-                r: '5',
-                fill: 'red'
-              }}
-              borderBottom
-              borderBottomProp={{
-                stroke: '#dfdfdf',
-                strokeWidth: 2
-              }}
-              data={pfmData.data.pfmOverviews}
-              labelTopStyle={{
-                fill: 'red',
-                fontSize: '13',
-                fontWeight: '600'
-              }}
-              labelTopPosition={20}
-              rectActiveBgPosX={-10}
-              rectActiveBgPosY={6}
-              rectActiveBgRad={5}
-              rectActiveSize={{
-                width: 40,
-                height: 20
-              }}
-              labelBottomStyle={{
-                fill: 'orange',
-                fontSize: '13',
-                fontWeight: '400'
-              }}
-              labelBottomPosition={30}
-              lineStyle={{
-                stroke: 'magenta',
-                strokeWidth: 3
-              }}
-              graphMarginVertical={50}
-              onPress={(index, item) => this._onPress(index, item)}
-              platform='web'
-              svgStyles={{
-                backgroundColor: '#fff',
-                width: this.state.jeenchartWidth,
-                height: 450
-              }}
-              trianglePositionY={6}
-              trianglePositionX={-2}
-              triangleSrc={triangle}
-              triangleScale={15}
-              separatorYear={this._checkYear(pfmData.data.pfmOverviews)}
-            />
-          )}
-        </div>
-        
-      </div>
-    );
-  }
-}
-
-render(<App />, document.getElementById('root'));
-```
-
-## Props
-
-```
-JenChart.defaultProps = {
-  activeColor: '#fff',
-  activeIndex: 0,
-  axisColor: '#f5f5f5',
-  axisCustom: {},
-  axisLabelAlign: 'end',
-  axisLabelColor: 'black',
-  axisLabelPosX: 5,
-  axisLabelPosY: 3.5,
-  axisLabelSize: 10,
-  axisPaddingLeft: 50,
-  barColor: {},
-  barLeftPos: 10,
-  barPadding: 1,
-  borderBottom: false,
-  borderBottomProp: {},
-  bgActiveColor: '#a5a5a5',
-  rectActiveBgPosX: 2,
-  rectActiveBgPosY: 6,
-  rectActiveBgRad: 5,
-  rectActiveSize: {
-    height: 20,
-    width: 35
-  },
-  circleActiveBgPos: 4,
-  circleActiveBgRad: 11,
-  circleStyle: {},
-  data: [],
-  fixTriangle: false,
-  graphBarWidth: 10,
-  labelTopStyle: {},
-  labelTopPosition: 15,
-  labelBottomStyle: {},
-  labelBottomPosition: 25,
-  lineStyle: {},
-  graphMarginVertical: 40,
-  months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  onPress: () => {},
-  singleYearPos: 5,
-  separatorStyle: {},
-  separatorYear: [],
-  svgStyles: {},
-  trianglePositionX: 10,
-  trianglePositionY: 0,
-  triangleScale: 10
-};
-
-JenChart.propTypes = {
-  data: PropTypes.array.isRequired,
-  platform: PropTypes.string.isRequired,
-  activeColor: PropTypes.string,
-  activeIndex: PropTypes.number,
-  axisColor: PropTypes.string,
-  axisCustom: PropTypes.object,
-  axisLabelAlign: PropTypes.string,
-  axisLabelColor: PropTypes.string,
-  axisLabelPosX: PropTypes.number,
-  axisLabelPosY: PropTypes.number,
-  axisLabelSize: PropTypes.number,
-  axisPaddingLeft: PropTypes.number,
-  barColor: PropTypes.object,
-  barLeftPos: PropTypes.number,
-  barPadding: PropTypes.number,
-  borderBottom: PropTypes.bool,
-  borderBottomProp: PropTypes.object,
-  bgActiveColor: PropTypes.string,
-  rectActiveBgPosX: PropTypes.number,
-  rectActiveBgPosY: PropTypes.number,
-  rectActiveBgRad: PropTypes.number,
-  rectActiveSize: PropTypes.object,
-  circleActiveBgPos: PropTypes.number,
-  circleActiveBgRad: PropTypes.number,
-  circleStyle: PropTypes.object,
-  fixTriangle: PropTypes.bool,
-  graphBarWidth: PropTypes.number,
-  graphMarginVertical: PropTypes.number,
-  labelTopStyle: PropTypes.object,
-  labelTopPosition: PropTypes.number,
-  labelBottomStyle: PropTypes.object,
-  labelBottomPosition: PropTypes.number,
-  lineStyle: PropTypes.object,
-  months: PropTypes.array,
-  onPress: PropTypes.func,
-  separatorStyle: PropTypes.object,
-  separatorYear: PropTypes.array,
-  singleYearPos: PropTypes.number,
-  svgStyles: PropTypes.object,
-  trianglePositionX: PropTypes.number,
-  trianglePositionY: PropTypes.number,
-  triangleScale: PropTypes.number
-};
 ```
