@@ -196,7 +196,7 @@ export default class JenChart extends PureComponent {
     return (
       <G key={'label' + item.lastTransactionDate}>
         {/* Active circle background */}
-        {this._activeIndex(index) && isAboveSixMonth && (
+        {this._activeIndex(index) && isAboveSixMonth && isShowLabel && (
           <Circle
             cx={x(item.lastTransactionDate) + marginCircleActiveBg}
             cy={labelTopVerticalPosition - circleActiveBgPos}
@@ -207,7 +207,7 @@ export default class JenChart extends PureComponent {
           />
         )}
         {/* Active rectangle background */}
-        {this._activeIndex(index) && !isAboveSixMonth && (
+        {this._activeIndex(index) && !isAboveSixMonth && isShowLabel && (
           <Rect
             x={x(item.lastTransactionDate) + rectActiveBgPosX}
             y={rectActiveBgPosY}
