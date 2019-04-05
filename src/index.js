@@ -32,8 +32,7 @@ export default class JenChart extends PureComponent {
       barPadding,
       graphMarginVertical,
       svgStyles,
-      platform,
-      isShowLabel
+      platform
     } = this.props;
 
     const graphHeight = svgStyles.height - 2 * graphMarginVertical;
@@ -125,7 +124,7 @@ export default class JenChart extends PureComponent {
     const graphWidth = svgStyles.width;
 
     return (
-      <Line x1='0' y1={graphMarginVertical} x2={graphWidth} y2={graphMarginVertical} {...borderBottomProp} />
+      <Line x1="0" y1={graphMarginVertical} x2={graphWidth} y2={graphMarginVertical} {...borderBottomProp} />
     );
   };
 
@@ -161,9 +160,9 @@ export default class JenChart extends PureComponent {
     } : emptyObj;
     const labelActiveStyles = this._activeIndex(index)
       ? {
-          fontWeight: '600',
-          ...isNotAndroidActiveColor
-        } : { fontWeight: '600' };
+        fontWeight: '600',
+        ...isNotAndroidActiveColor
+      } : { fontWeight: '600' };
 
     // Default Style include Active Style
     const isAndroidDefaultColor = platform === 'android' ? emptyObj : {
@@ -184,17 +183,17 @@ export default class JenChart extends PureComponent {
     const triangleSize = triangleScale;
     const triangleProps = fixTriangle
       ? {
-          x: x(item.lastTransactionDate) - (triangleSize / 2) - trianglePositionX,
-          y: ((0 - graphMarginVertical) + triangleSize) - trianglePositionY
-        }
+        x: x(item.lastTransactionDate) - (triangleSize / 2) - trianglePositionX,
+        y: ((0 - graphMarginVertical) + triangleSize) - trianglePositionY
+      }
       : {
-          x: x(item.lastTransactionDate) - trianglePositionX,
-          y: (graphMarginVertical - triangleSize) + trianglePositionY
-        };
+        x: x(item.lastTransactionDate) - trianglePositionX,
+        y: (graphMarginVertical - triangleSize) + trianglePositionY
+      };
     const month = _getMonth(item.lastTransactionDate);
 
     return (
-      <G key={'label' + item.lastTransactionDate}>
+      <G key={`label${item.lastTransactionDate}`}>
         {/* Active circle background */}
         {this._activeIndex(index) && isAboveSixMonth && isShowLabel && (
           <Circle
@@ -235,11 +234,11 @@ export default class JenChart extends PureComponent {
         {this._activeIndex(index) && triangleSrc && (
           <Image
             href={triangleSrc}
-            preserveAspectRatio='xMidYMid slice'
+            preserveAspectRatio="xMidYMid slice"
             height={triangleSize}
             width={triangleSize}
-            opacity='1'
-            clipPath='url(#clip)'
+            opacity="1"
+            clipPath="url(#clip)"
             {...triangleProps}
           />
         )}
@@ -259,8 +258,8 @@ export default class JenChart extends PureComponent {
     const isLineCap = (value) => {
       const val = (value / topValue) * 100;
 
-      return val > 5 ? true : false;
-    }
+      return val > 5;
+    };
 
     return (
       <G>
@@ -269,18 +268,18 @@ export default class JenChart extends PureComponent {
           y1={y(0) * -1}
           x2={x(item.lastTransactionDate) + barLeftPos}
           y2={y(topValue) * -1}
-          stroke='#f5f5f5'
+          stroke="#f5f5f5"
           strokeWidth={graphBarWidth}
-          strokeLinecap='round'
+          strokeLinecap="round"
         />
         <Line
           x1={x(item.lastTransactionDate) + barLeftPos}
           y1={y(0) * -1}
           x2={x(item.lastTransactionDate) + barLeftPos}
           y2={y(-topValue) * -1}
-          stroke='#f5f5f5'
+          stroke="#f5f5f5"
           strokeWidth={graphBarWidth}
-          strokeLinecap='round'
+          strokeLinecap="round"
         />
 
         <Line
@@ -299,7 +298,7 @@ export default class JenChart extends PureComponent {
             y2={y(-Spending.total) * -1}
             stroke={barColors.barRight}
             strokeWidth={graphBarWidth}
-            strokeLinecap='round'
+            strokeLinecap="round"
           />
         )}
 
@@ -319,7 +318,7 @@ export default class JenChart extends PureComponent {
             y2={y(Income.total) * -1}
             stroke={barColors.barLeft}
             strokeWidth={graphBarWidth}
-            strokeLinecap='round'
+            strokeLinecap="round"
           />
         )}
       </G>
@@ -428,7 +427,7 @@ export default class JenChart extends PureComponent {
               </SText>
             )}
           </G>
-        )
+        );
       }
     }
 
@@ -448,12 +447,12 @@ export default class JenChart extends PureComponent {
             {_getYear(array[index].lastTransactionDate)}
           </SText>
         </G>
-      )
+      );
     }
   }
 
   _getMaxValue = data =>
-    d3.max(data, d => {
+    d3.max(data, (d) => {
       const Income = _selectObject(d.pfmTypes, 'name', 'Income');
       const Net = _selectObject(d.pfmTypes, 'name', 'Net');
       const Spending = _selectObject(d.pfmTypes, 'name', 'Spending');
@@ -490,12 +489,13 @@ export default class JenChart extends PureComponent {
 
     return (
       <Rect
+        accessibilityLabel={`jenchart_${index}`}
         x={x(item.lastTransactionDate) + barLeftPos - halfgraphBarWidth - 5}
         y={graphHeight * -1}
         width={graphBarWidth * 2}
         height={graphHeight + graphMarginVertical}
-        fill='transparent'
-        opacity='0.5'
+        fill="transparent"
+        opacity="0.5"
         {...propsOnpress}
       />
     );
@@ -548,7 +548,7 @@ export default class JenChart extends PureComponent {
         </G>
 
         {data.map(item => (
-          <G y={graphHeight + graphMarginVertical} key={'bar' + item.lastTransactionDate}>
+          <G y={graphHeight + graphMarginVertical} key={`bar${item.lastTransactionDate}`}>
             {this._drawBars(item, x, y, topValue)}
             {this._drawCircle(item, x, y)}
           </G>
@@ -558,7 +558,7 @@ export default class JenChart extends PureComponent {
           (item, index, array) =>
             <G
               y={graphHeight + graphMarginVertical}
-              key={'line' + item.lastTransactionDate}
+              key={`line${item.lastTransactionDate}`}
             >
               {this._drawLine(x, y, index, array)}
               {this._drawSeparator(x, y, index, array, topValue)}
@@ -566,10 +566,11 @@ export default class JenChart extends PureComponent {
         )}
 
         {data.map((item, index, array) =>
-          platform === 'web' ? (
+          (platform === 'web' ? (
             <Svg
+              accessibilityLabel={`jenchart_${index}`}
               y={graphHeight + graphMarginVertical}
-              key={'rectOnPress' + item.lastTransactionDate}
+              key={`rectOnPress${item.lastTransactionDate}`}
               onClick={() => this._rectOnPress(index, item)}
               style={{ overflow: 'initial' }}
             >
@@ -583,7 +584,7 @@ export default class JenChart extends PureComponent {
           ) : (
             <G
               y={graphHeight + graphMarginVertical}
-              key={'rectOnPress' + item.lastTransactionDate}
+              key={`rectOnPress${item.lastTransactionDate}`}
             >
               {this._drawRectOnPress(
                 index,
@@ -592,7 +593,7 @@ export default class JenChart extends PureComponent {
                 graphHeight,
               )}
             </G>
-          )
+          ))
         )}
       </Svg>
     );
