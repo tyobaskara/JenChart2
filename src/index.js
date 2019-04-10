@@ -462,7 +462,7 @@ export default class JenChart extends PureComponent {
     }
 
     if (_isEqual(yearLen, 1)) {
-      return isLastIndex && (
+      return isShowLabel && isLastIndex && (
         <SText
           {...labelBottomStyles}
           x={pos + barLeftPos - singleYearHorizontalPos}
