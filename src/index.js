@@ -1,9 +1,11 @@
+/* eslint-disable complexity */
+/* eslint-disable max-lines-per-function */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Svg, G, Line, Rect, Text as SText, Circle, Image } from 'svgs';
 import * as d3 from 'd3';
 
-import { _formatAxisLabel, _getMonth, _getYear, _selectObject } from './util';
+import { _isEqual, _formatAxisLabel, _getMonthNumber, _getYear, _selectObject } from './util';
 
 const emptyObj = {};
 const emptyArr = [];
@@ -79,7 +81,8 @@ export default class JenChart extends PureComponent {
       axisLabelPosX,
       axisLabelPosY,
       platform,
-      isShowLabel
+      isShowLabel,
+      units
     } = this.props;
 
     const isNotAndroid = platform !== 'android' ? {
@@ -99,7 +102,7 @@ export default class JenChart extends PureComponent {
         {...fontFml}
         {...isNotAndroid}
       >
-        {isInitial ? 0 : _formatAxisLabel(value)}
+        {isInitial ? 0 : _formatAxisLabel(value, units)}
       </SText>
     );
   };
@@ -190,7 +193,7 @@ export default class JenChart extends PureComponent {
         x: x(item.lastTransactionDate) - trianglePositionX,
         y: (graphMarginVertical - triangleSize) + trianglePositionY
       };
-    const month = _getMonth(item.lastTransactionDate);
+    const month = _getMonthNumber(item.lastTransactionDate);
 
     return (
       <G key={`label${item.lastTransactionDate}`}>
@@ -369,28 +372,12 @@ export default class JenChart extends PureComponent {
   _drawSeparator = (x, y, index, array, topValue) => {
     const {
       barLeftPos,
-      labelBottomVerticalPosition,
-      labelBottomStyle,
-      labelColor,
-      singleYearHorizontalPos,
-      graphMarginVertical,
-      platform,
-      isShowLabel
+      graphMarginVertical
     } = this.props;
     const { separatorYear } = this.state;
     const nextIndex = index + 1;
 
     const pos = x(array[index].lastTransactionDate);
-
-    const isAndroidDefaultColor = platform === 'android' ? emptyObj : {
-      fill: labelColor
-    };
-    const labelBottomStyles = {
-      fontSize: '10',
-      fontWeight: '400',
-      ...isAndroidDefaultColor,
-      ...labelBottomStyle
-    };
 
     const style = {
       stroke: '#dfdfdf',
@@ -400,7 +387,6 @@ export default class JenChart extends PureComponent {
     };
 
     if (index < array.length - 1) {
-
       const getYear = _getYear(array[index].lastTransactionDate);
       const nextGetYear = _getYear(array[nextIndex].lastTransactionDate);
 
@@ -417,36 +403,73 @@ export default class JenChart extends PureComponent {
               y2={y(-topValue) * -1 + graphMarginVertical}
               {...style}
             />
-            {isShowLabel && (
-              <SText
-                {...labelBottomStyles}
-                x={midPos + barLeftPos - singleYearHorizontalPos}
-                y={labelBottomVerticalPosition}
-              >
-                {_getYear(array[index].lastTransactionDate)}
-              </SText>
-            )}
           </G>
         );
       }
     }
+  }
+  _drawYear = (x, index, array) => {
+    const {
+      barLeftPos,
+      labelBottomVerticalPosition,
+      labelBottomStyle,
+      labelColor,
+      singleYearHorizontalPos,
+      platform,
+      isShowLabel
+    } = this.props;
+    const { separatorYear } = this.state;
+    const yearLen = separatorYear.length;
+    const arrayLastTransactionDate = array[index].lastTransactionDate;
+    const month = _getMonthNumber(arrayLastTransactionDate);
+    const pos = x(arrayLastTransactionDate);
+    const isLastIndex = this.props.data.length === index + 1;
+    const isAndroidDefaultColor = platform === 'android' ? emptyObj : {
+      fill: labelColor
+    };
+    const labelBottomStyles = {
+      fontSize: '10',
+      fontWeight: '400',
+      ...isAndroidDefaultColor,
+      ...labelBottomStyle
+    };
 
-    if (separatorYear.length === 1 && nextIndex === array.length) {
-      const textAnchor = platform === 'android' ? emptyObj : {
-        textAnchor: 'middle'
-      };
-
-      return isShowLabel && (
+    if (_isEqual(yearLen, 2)) {
+      const isJanuary = _isEqual(parseInt(month, 0), 1);
+      const isDecember = _isEqual(parseInt(month, 0), 12);
+      return (
         <G>
-          <SText
-            {...labelBottomStyles}
-            x={pos + barLeftPos}
-            y={labelBottomVerticalPosition}
-            {...textAnchor}
-          >
-            {_getYear(array[index].lastTransactionDate)}
-          </SText>
+          {isShowLabel && isDecember && (
+            <SText
+              {...labelBottomStyles}
+              x={pos + barLeftPos - singleYearHorizontalPos}
+              y={labelBottomVerticalPosition}
+            >
+              {_getYear(arrayLastTransactionDate)}
+            </SText>
+          )}
+          {isShowLabel && isLastIndex && !isJanuary && (
+            <SText
+              {...labelBottomStyles}
+              x={pos + barLeftPos - singleYearHorizontalPos}
+              y={labelBottomVerticalPosition}
+            >
+              {_getYear(arrayLastTransactionDate)}
+            </SText>
+          )}
         </G>
+      );
+    }
+
+    if (_isEqual(yearLen, 1)) {
+      return isLastIndex && (
+        <SText
+          {...labelBottomStyles}
+          x={pos + barLeftPos - singleYearHorizontalPos}
+          y={labelBottomVerticalPosition}
+        >
+          {_getYear(arrayLastTransactionDate)}
+        </SText>
       );
     }
   }
@@ -562,6 +585,7 @@ export default class JenChart extends PureComponent {
             >
               {this._drawLine(x, y, index, array)}
               {this._drawSeparator(x, y, index, array, topValue)}
+              {this._drawYear(x, index, array)}
             </G>
         )}
 
